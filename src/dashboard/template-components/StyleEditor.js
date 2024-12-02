@@ -1,0 +1,61 @@
+import React from 'react';
+import { Box, TextField, Typography } from '@mui/material';
+
+const StyleEditor = ({ activeStyles, handleStyleChange }) => {
+  if (!activeStyles) return null;
+
+  return (
+    <Box
+      sx={{
+        padding: 2,
+        borderTop: '1px solid #ddd',
+        backgroundColor: '#f5f5f5',
+        mt: 2,
+        width: '100%',
+      }}
+    >
+      <Typography variant='h6' gutterBottom>
+        Edit Styles
+      </Typography>
+      <Box sx={{ display: 'flex', flexDirection:'column', gap: 2 }}>
+        <TextField
+          label='Width'
+          value={activeStyles.width || ''}
+          onChange={(e) => handleStyleChange('width', e.target.value)}
+          size='small'
+          fullWidth // TextField spans the full width of its container
+        />
+        <TextField
+          label='Height'
+          value={activeStyles.height || ''}
+          onChange={(e) => handleStyleChange('height', e.target.value)}
+          size='small'
+          fullWidth
+        />
+        <TextField
+          label='Background Color'
+          value={activeStyles.backgroundColor || ''}
+          onChange={(e) => handleStyleChange('backgroundColor', e.target.value)}
+          size='small'
+          fullWidth
+        />
+        <TextField
+          label='Font Size'
+          value={activeStyles.fontSize || ''}
+          onChange={(e) => handleStyleChange('fontSize', e.target.value)}
+          size='small'
+          fullWidth
+        />
+        <TextField
+          label='Color'
+          value={activeStyles.color || ''}
+          onChange={(e) => handleStyleChange('color', e.target.value)}
+          size='small'
+          fullWidth
+        />
+      </Box>
+    </Box>
+  );
+};
+
+export default StyleEditor;

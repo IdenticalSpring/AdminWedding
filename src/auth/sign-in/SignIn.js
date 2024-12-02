@@ -132,7 +132,7 @@ export default function SignIn(props) {
         });
 
         setTimeout(() => {
-          navigate('/');
+          navigate('/dashboard');
         }, 2000);
       }
     } catch (error) {
@@ -164,7 +164,7 @@ export default function SignIn(props) {
             variant='h4'
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
-            Sign in
+            Đăng nhập
           </Typography>
           <Box
             component='form'
@@ -210,10 +210,10 @@ export default function SignIn(props) {
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value='remember' color='primary' />}
               label='Remember me'
-            />
+            /> */}
             <Button type='submit' fullWidth variant='contained'>
               Sign in
             </Button>
@@ -224,7 +224,7 @@ export default function SignIn(props) {
               variant='body2'
               sx={{ alignSelf: 'center' }}
             >
-              Forgot your password?
+              Quên mật khẩu?
             </Link>
           </Box>
           <Divider>or</Divider>
