@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, Button, Box } from '@mui/material';
-import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import Header from './components/Header';
-import { TemplateAPI } from '../service/template';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import React, { useState, useEffect } from "react";
+import { Typography, Button, Box } from "@mui/material";
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import Header from "./components/Header";
+import {
+  getAllTemplates,
+  deleteTemplateById,
+} from "../service/templateService";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const TemplateManagement = () => {
   const [templates, setTemplates] = useState([]);
@@ -16,10 +19,10 @@ const TemplateManagement = () => {
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
-        const response = await TemplateAPI.getAllTemplates(1);
+        const response = await getAllTemplates(1);
         setTemplates(response.data.data);
       } catch (error) {
-        console.error('Error fetching templates:', error);
+        console.error("Error fetching templates:", error);
       } finally {
         setLoading(false);
       }
@@ -30,10 +33,10 @@ const TemplateManagement = () => {
 
   const handleDelete = async (id) => {
     try {
-      await TemplateAPI.deleteTemplate(id);
+      await deleteTemplateById(id);
       setTemplates(templates.filter((template) => template.id !== id));
     } catch (error) {
-      console.error('Error deleting template:', error);
+      console.error("Error deleting template:", error);
     }
   };
 
@@ -42,16 +45,16 @@ const TemplateManagement = () => {
   };
 
   const handleAddTemplate = () => {
-    navigate('/create-template'); 
+    navigate("/create-template");
   };
 
   const columns = [
-    { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'description', headerName: 'Description', flex: 2 },
+    { field: "name", headerName: "Name", flex: 1 },
+    { field: "description", headerName: "Description", flex: 2 },
     {
-      field: 'actions',
-      headerName: 'Actions',
-      type: 'actions',
+      field: "actions",
+      headerName: "Actions",
+      type: "actions",
       flex: 1,
       getActions: (params) => [
         <GridActionsCellItem
@@ -72,10 +75,10 @@ const TemplateManagement = () => {
     return (
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
         }}
       >
         <Typography variant="h6">Loading data...</Typography>
@@ -92,8 +95,8 @@ const TemplateManagement = () => {
         </Typography>
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
+            display: "flex",
+            justifyContent: "flex-end",
             marginBottom: 2,
           }}
         >

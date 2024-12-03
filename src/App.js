@@ -6,7 +6,8 @@ import SignIn from "./auth/sign-in/SignIn";
 import DashboardLayout from "./dashboard/Dashboard";
 import MainGrid from "./dashboard/components/MainGrid";
 import PrivateRoute from "./service/PrivateRoute";
-import TemplateManagement from "./dashboard/TemplateManagement";
+import CreateTemplate from "./dashboard/CreateTemplate";
+import TemplateManagement from "./dashboard/Template";
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
                 <TemplateManagement />
               </PrivateRoute>
             </DashboardLayout>
+          }
+        />
+        <Route
+          path="/create-template"
+          element={
+            <PrivateRoute>
+              <CreateTemplate />
+            </PrivateRoute>
           }
         />
       </Routes>
