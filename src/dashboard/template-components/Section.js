@@ -8,6 +8,7 @@ const Section = ({
   index,
   setSections,
   setActiveItem,
+  activeItem,
   setActiveStyles,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -68,8 +69,12 @@ const Section = ({
   };
 
   const handleDoubleClick = () => {
-    setActiveItem({ sectionId: section.id, componentId: null });
-    setActiveStyles({ backgroundColor: section.backgroundColor || "#fff" });
+    if (setActiveStyles) {
+      setActiveItem({ sectionId: section.id, componentId: null });
+      setActiveStyles({ backgroundColor: section.backgroundColor || "#fff" });
+    } else {
+      console.error("setActiveStyles is not available");
+    }
   };
 
   return (
@@ -95,6 +100,7 @@ const Section = ({
           onDrag={(newPosition) =>
             handleDragComponent(component.id, newPosition)
           }
+          active={activeItem?.componentId === component.id}
           setActiveItem={() =>
             setActiveItem({ sectionId: section.id, componentId: component.id })
           }

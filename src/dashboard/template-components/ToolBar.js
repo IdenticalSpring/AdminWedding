@@ -1,30 +1,19 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
-import { useDrag } from "react-dnd";
+import { Box } from "@mui/material";
 import StyleEditor from "./StyleEditor";
+import {
+  TextBox,
+  ImageBox,
+  Rectangle,
+  Circle,
+  Diamond,
+  Line,
+  Arrow,
+  Triangle,
+  Hexagon,
+} from "../../utils/draggableComponents";
 
 const Toolbar = ({ activeStyles, handleStyleChange }) => {
-  const components = [
-    { type: "text", label: "Text Box" },
-    { type: "image", label: "Image Box" },
-    { type: "button", label: "Button" },
-    { type: "rect", label: "Rectangle" },
-    { type: "circle", label: "Circle" },
-  ];
-
-  const DraggableItem = ({ type, label }) => {
-    const [, dragRef] = useDrag(() => ({
-      type: "component",
-      item: { type },
-    }));
-
-    return (
-      <Button ref={dragRef} variant="outlined" fullWidth sx={{ mb: 2 }}>
-        {label}
-      </Button>
-    );
-  };
-
   return (
     <Box
       sx={{
@@ -34,21 +23,25 @@ const Toolbar = ({ activeStyles, handleStyleChange }) => {
         backgroundColor: "#f9f9f9",
         display: "flex",
         flexDirection: "column",
-        height: "calc(100vh-53px)",
+        height: "calc(100vh - 53px)",
         borderLeft: "1px solid #ddd",
-        marginTop: "53px"
+        marginTop: "53px",
+        zIndex: 1,
       }}
     >
       <Box sx={{ flexGrow: 1, width: "100%" }}>
-        {components.map((component) => (
-          <DraggableItem key={component.type} {...component} />
-        ))}
+        <TextBox />
+        <ImageBox />
+        <Rectangle />
+        <Circle />
       </Box>
 
-      <StyleEditor
-        activeStyles={activeStyles}
-        handleStyleChange={handleStyleChange}
-      />
+      {activeStyles && (
+        <StyleEditor
+          activeStyles={activeStyles}
+          handleStyleChange={handleStyleChange}
+        />
+      )}
     </Box>
   );
 };

@@ -1,10 +1,12 @@
 import React, { useState, useRef } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "./template-components/Canvas";
 import Toolbar from "./template-components/ToolBar";
 import Headerv2 from "./template-components/Headerv2";
+import StyleEditor from "./template-components/StyleEditor";
+
 const CreateTemplate = () => {
   const [sections, setSections] = useState([]);
   const [activeItem, setActiveItem] = useState(null);
@@ -76,17 +78,28 @@ const CreateTemplate = () => {
     setSections([...sections, newSection]);
   };
 
+  const handleCanvasClick = (event) => {
+    if (event.target.id === "canvas" || event.target.closest(".component") === null) {
+      setActiveItem(null);
+      setActiveStyles({});
+    }
+  };
+
+  const handleComponentClick = (component) => {
+    setActiveItem(component);
+    setActiveStyles(component.style || {});
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <Box
         sx={{
-          padding: 0,
           display: "flex",
           flexDirection: "column",
           height: "100vh",
           backgroundColor: "#FCFCFC",
-          padding: 0,
         }}
+        onClick={handleCanvasClick} 
       >
         <Box
           sx={{
@@ -94,13 +107,12 @@ const CreateTemplate = () => {
             top: 0,
             width: "87%",
             zIndex: 1000,
-            padding: 0,
-            backgroundColor: "#FCFCFC"
-
+            backgroundColor: "#FCFCFC",
           }}
         >
           <Headerv2 />
         </Box>
+
         <Box
           sx={{
             display: "flex",
@@ -113,8 +125,8 @@ const CreateTemplate = () => {
             activeStyles={activeStyles}
             handleStyleChange={handleStyleChange}
           />
-
           <Box
+            id="canvas"
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -122,9 +134,9 @@ const CreateTemplate = () => {
             onMouseLeave={handleMouseUp}
             sx={{
               flex: 1,
-              width: '100%',
               backgroundColor: "#FCFCFC",
               cursor: isPanning.current ? "grabbing" : "grab",
+              position: "relative",
             }}
           >
             <Box
@@ -139,31 +151,48 @@ const CreateTemplate = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                position: "relative",
               }}
             >
               <Box
                 sx={{
                   width: "800px",
                   height: "600px",
-                  backgroundColor: "#fff",
-                  border: "1px solid #ddd",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  borderRadius: 2,
                   position: "relative",
                 }}
               >
-                <Typography variant="h4" align="center" sx={{ pt: 2 }}>
-                  Create Template
-                </Typography>
                 <Canvas
                   sections={sections}
                   setSections={setSections}
-                  setActiveItem={setActiveItem}
-                  setActiveStyles={setActiveStyles}
+                  setActiveItem={handleComponentClick}
+                  activeItem={activeItem}
+                  setActiveStyles={setActiveStyles} 
                 />
               </Box>
             </Box>
           </Box>
+        </Box>
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={addSection}
+            sx={{
+              padding: "10px 20px",
+              borderRadius: "5px",
+              fontSize: "16px",
+              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            Add Section
+          </Button>
         </Box>
       </Box>
     </DndProvider>
