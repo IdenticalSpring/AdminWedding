@@ -34,18 +34,17 @@ const Toolbar = ({ activeStyles, handleStyleChange }) => {
         backgroundColor: "#f9f9f9",
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
+        height: "calc(100vh-53px)",
         borderLeft: "1px solid #ddd",
+        marginTop: "53px"
       }}
     >
-      {/* Components list with flexGrow to push StyleEditor to the bottom */}
       <Box sx={{ flexGrow: 1, width: "100%" }}>
         {components.map((component) => (
           <DraggableItem key={component.type} {...component} />
         ))}
       </Box>
 
-      {/* StyleEditor stays at the bottom */}
       <StyleEditor
         activeStyles={activeStyles}
         handleStyleChange={handleStyleChange}

@@ -9,7 +9,7 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
       sx={{
         padding: 2,
         borderTop: '1px solid #ddd',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#fcfcfc',
         mt: 2,
         width: '100%',
       }}
