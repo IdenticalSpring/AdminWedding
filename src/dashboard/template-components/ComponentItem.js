@@ -155,6 +155,7 @@ const ComponentItem = ({ component, handleDelete }) => {
         cursor: "move",
         padding: 1,
         transition: "border 0.3s ease",
+        borderRadius: component.type === "circle" ? "50%" : "0%",
       }}
       onMouseDown={handleDragStart}
       onMouseMove={handleDrag}

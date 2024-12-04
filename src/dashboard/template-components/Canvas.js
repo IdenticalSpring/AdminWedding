@@ -1,15 +1,15 @@
-import React from 'react';
-import { Box } from '@mui/material';
-import Section from './Section';
+import React from "react";
+import { Box } from "@mui/material";
+import Section from "./Section";
 
 const Canvas = ({ sections, setSections, setActiveItem, setActiveStyles }) => {
   return (
     <Box
       sx={{
-        border: '1px solid #ddd',
+        border: "1px solid #ddd",
         padding: 2,
-        minHeight: '80vh',
-        backgroundColor: '#fff',
+        minHeight: "80vh",
+        backgroundColor: "#fff",
       }}
     >
       {sections.map((section, index) => (

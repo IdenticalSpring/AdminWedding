@@ -8,6 +8,8 @@ const Toolbar = ({ activeStyles, handleStyleChange }) => {
     { type: "text", label: "Text Box" },
     { type: "image", label: "Image Box" },
     { type: "button", label: "Button" },
+    { type: "rect", label: "Rectangle" },
+    { type: "circle", label: "Circle" },
   ];
 
   const DraggableItem = ({ type, label }) => {
