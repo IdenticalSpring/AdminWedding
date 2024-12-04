@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Box } from '@mui/material';
-import { useDrop } from 'react-dnd';
-import ComponentItem from './ComponentItem';
+import React, { useState } from "react";
+import { Box } from "@mui/material";
+import { useDrop } from "react-dnd";
+import ComponentItem from "./ComponentItem";
 
 const Section = ({
   section,
@@ -13,7 +13,7 @@ const Section = ({
   const [isHovered, setIsHovered] = useState(false);
 
   const [, dropRef] = useDrop(() => ({
-    accept: 'component',
+    accept: "component",
     drop: (item, monitor) => {
       const offset = monitor.getClientOffset();
       const dropPosition = {
@@ -21,19 +21,21 @@ const Section = ({
         top: offset.y - monitor.getSourceClientOffset().y,
       };
 
+      const newComponent = {
+        id: Date.now().toString(),
+        type: item.type,
+        style: {
+          ...dropPosition,
+          width: 100,
+          height: 50,
+          fontSize: 16,
+          color: "#000",
+        },
+      };
+
       setSections((prevSections) => {
         const newSections = [...prevSections];
-        newSections[index].components.push({
-          id: Date.now().toString(),
-          type: item.type,
-          style: {
-            ...dropPosition,
-            width: 100,
-            height: 50,
-            fontSize: 16,
-            color: '#000',
-          },
-        });
+        newSections[index].components.push(newComponent);
         return newSections;
       });
     },
@@ -67,7 +69,7 @@ const Section = ({
 
   const handleDoubleClick = () => {
     setActiveItem({ sectionId: section.id, componentId: null });
-    setActiveStyles({ backgroundColor: section.backgroundColor || '#fff' });
+    setActiveStyles({ backgroundColor: section.backgroundColor || "#fff" });
   };
 
   return (
@@ -75,13 +77,13 @@ const Section = ({
       onDoubleClick={handleDoubleClick}
       ref={dropRef}
       sx={{
-        position: 'relative',
-        border: isHovered ? '2px solid #2196f3' : '1px dashed #ccc',
+        position: "relative",
+        border: isHovered ? "2px solid #2196f3" : "1px dashed #ccc",
         padding: 2,
         marginBottom: 2,
-        minHeight: '150px',
-        backgroundColor: '#f9f9f9',
-        transition: 'border 0.3s ease',
+        minHeight: "150px",
+        backgroundColor: "#f9f9f9",
+        transition: "border 0.3s ease",
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
