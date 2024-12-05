@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   Box,
   Button,
@@ -15,15 +15,9 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "./template-components/Canvas";
 import Toolbar from "./template-components/ToolBar";
 import { getAllWedding } from "../service/weddingService";
-import {
-  saveHeaderSection,
-  saveAboutSection,
-  saveEventDetailsSection,
-  saveGallerySection,
-  saveGuestBookSection,
-} from "../service/templateService";
+import { createTemplate, createSection } from "../service/templateService";
+
 import Headerv2 from "./template-components/Headerv2";
-import StyleEditor from "./template-components/StyleEditor";
 
 const CreateTemplate = () => {
   const [sections, setSections] = useState([]);
@@ -32,7 +26,12 @@ const CreateTemplate = () => {
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [weddings, setWeddings] = useState([]);
-  const [selectedWedding, setSelectedWedding] = useState("");
+  const [templateData, setTemplateData] = useState({
+    name: "",
+    description: "",
+    accessType: "",
+    metaData: {},
+  });
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -42,35 +41,52 @@ const CreateTemplate = () => {
   const isPanning = useRef(false);
   const startPoint = useRef({ x: 0, y: 0 });
 
-  // Fetch wedding data on mount
   useEffect(() => {
     const fetchWeddingData = async () => {
       try {
         const data = await getAllWedding();
         setWeddings(data.data);
       } catch (error) {
-        console.error("Failed to fetch wedding data:", error);
         showSnackbar("Failed to load wedding data", "error");
       }
     };
-
     fetchWeddingData();
   }, []);
 
   const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });
   };
+  const handleSaveSections = async () => {
+    try {
+      // First, create the template
+      const savedTemplate = await createTemplate(templateData); // This should save the template and return the saved template with templateID
+      const templateID = savedTemplate.id; // Get the template ID
+
+      // Now associate templateID with each section and save
+      const sectionsWithTemplate = sections.map((section) => ({
+        ...section,
+        templateID: templateID, // Add the template ID to each section
+      }));
+
+      // Save sections
+      for (const section of sectionsWithTemplate) {
+        await createSection(section); // Assuming the API will handle creating sections with the templateID
+      }
+
+      showSnackbar("Template and sections saved successfully!", "success");
+    } catch (error) {
+      showSnackbar(
+        error.message || "Failed to save template and sections",
+        "error"
+      );
+    }
+  };
 
   const handleStyleChange = (key, value) => {
     if (!activeItem) return;
-
-    setActiveStyles((prevStyles) => ({
-      ...prevStyles,
-      [key]: value,
-    }));
-
-    setSections((prevSections) =>
-      prevSections.map((section) =>
+    setActiveStyles((prev) => ({ ...prev, [key]: value }));
+    setSections((prev) =>
+      prev.map((section) =>
         section.id === activeItem.sectionId
           ? {
               ...section,
@@ -90,8 +106,10 @@ const CreateTemplate = () => {
 
   const handleWheel = (event) => {
     event.preventDefault();
-    const delta = event.deltaY > 0 ? -0.1 : 0.1;
-    setScale((prevScale) => Math.min(Math.max(prevScale + delta, 0.5), 3));
+    setScale((prevScale) => {
+      const delta = event.deltaY > 0 ? -0.1 : 0.1;
+      return Math.min(Math.max(prevScale + delta, 0.5), 3);
+    });
   };
 
   const handleMouseDown = (event) => {
@@ -100,121 +118,26 @@ const CreateTemplate = () => {
     startPoint.current = { x: event.clientX, y: event.clientY };
   };
 
-  const handleMouseMove = (event) => {
+  const handleMouseMove = useCallback((event) => {
     if (!isPanning.current) return;
-
     const dx = event.clientX - startPoint.current.x;
     const dy = event.clientY - startPoint.current.y;
-
-    setTranslate((prev) => ({
-      x: prev.x + dx,
-      y: prev.y + dy,
-    }));
-
+    setTranslate((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
     startPoint.current = { x: event.clientX, y: event.clientY };
-  };
+  }, []);
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     isPanning.current = false;
-  };
+  }, []);
 
   const addSection = () => {
     const newSection = { id: Date.now().toString(), components: [] };
-    setSections([...sections, newSection]);
-  };
-
-  const saveTemplate = async () => {
-    // if (!selectedWedding) {
-    //   showSnackbar("Please select a wedding", "warning");
-    //   return;
-    // }
-
-    const orderedSections = [
-      {
-        sectionType: "header-section",
-        data: {
-          weddingId: selectedWedding,
-          metaData: JSON.stringify(
-            sections.filter((section) => section.type === "header-section")
-          ),
-        },
-      },
-      {
-        sectionType: "about-section",
-        data: {
-          weddingId: selectedWedding,
-          metaData: JSON.stringify(
-            sections.filter((section) => section.type === "about-section")
-          ),
-        },
-      },
-      {
-        sectionType: "gallery-section",
-        data: {
-          weddingId: selectedWedding,
-          metaData: JSON.stringify(
-            sections.filter((section) => section.type === "gallery-section")
-          ),
-        },
-      },
-      {
-        sectionType: "event-details",
-        data: {
-          weddingId: selectedWedding,
-          metaData: JSON.stringify(
-            sections.filter((section) => section.type === "event-details")
-          ),
-        },
-      },
-      {
-        sectionType: "guestbook-section",
-        data: {
-          weddingId: selectedWedding,
-          metaData: JSON.stringify(
-            sections.filter((section) => section.type === "guestbook-section")
-          ),
-        },
-      },
-    ];
-
-    try {
-      // Save each section in order
-      for (let i = 0; i < orderedSections.length; i++) {
-        const { sectionType, data } = orderedSections[i];
-
-        // Call the appropriate save function based on the sectionType
-        switch (sectionType) {
-          case "header-section":
-            await saveHeaderSection(data);
-            break;
-          case "about-section":
-            await saveAboutSection(data);
-            break;
-          case "gallery-section":
-            await saveGallerySection(data);
-            break;
-          case "event-details":
-            await saveEventDetailsSection(data);
-            break;
-          case "guestbook-section":
-            await saveGuestBookSection(data);
-            break;
-          default:
-            break;
-        }
-      }
-      showSnackbar("Template saved successfully!", "success");
-    } catch (error) {
-      console.error("Error saving template:", error);
-      showSnackbar("Failed to save template", "error");
-    }
+    setSections((prevSections) => [...prevSections, newSection]);
+    showSnackbar("New section added", "success");
   };
 
   const handleCanvasClick = (event) => {
-    if (
-      event.target.id === "canvas" ||
-      event.target.closest(".component") === null
-    ) {
+    if (event.target.id === "canvas" || !event.target.closest(".component")) {
       setActiveItem(null);
       setActiveStyles({});
     }
@@ -247,7 +170,6 @@ const CreateTemplate = () => {
         >
           <Headerv2 />
         </Box>
-
         <Box
           sx={{
             display: "flex",
@@ -289,21 +211,8 @@ const CreateTemplate = () => {
                 position: "relative",
               }}
             >
-              {/* <Button
-                variant="contained"
-                color="primary"
-                onClick={addSection}
-                sx={{ position: "absolute", top: "10px", right: "100px" }}
-              >
-                Add Section
-              </Button> */}
-
               <Box
-                sx={{
-                  width: "800px",
-                  height: "600px",
-                  position: "relative",
-                }}
+                sx={{ width: "800px", height: "600px", position: "relative" }}
               >
                 <Canvas
                   sections={sections}
@@ -320,7 +229,6 @@ const CreateTemplate = () => {
           sx={{
             position: "fixed",
             display: "flex",
-            flexDirection: "row",
             gap: "10px",
             bottom: "20px",
             left: "50%",
@@ -331,39 +239,27 @@ const CreateTemplate = () => {
             variant="contained"
             color="primary"
             onClick={addSection}
-            sx={{
-              padding: "10px 20px",
-              borderRadius: "5px",
-              fontSize: "16px",
-              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-            }}
+            sx={{ padding: "10px 20px", borderRadius: "5px", fontSize: "16px" }}
           >
             Add Section
           </Button>
           <Button
             variant="contained"
-            color="success"
-            onClick={saveTemplate}
-            sx={{ position: "absolute", top: "10px", right: "10px" }}
+            color="primary"
+            onClick={handleSaveSections}
+            sx={{ padding: "10px 20px", borderRadius: "5px", fontSize: "16px" }}
           >
             Save Template
           </Button>
         </Box>
       </Box>
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       >
-        <Alert
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
-        >
-          {snackbar.message}
-        </Alert>
+        <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
       </Snackbar>
     </DndProvider>
   );

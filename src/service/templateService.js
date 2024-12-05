@@ -1,18 +1,38 @@
 import axios from "axios";
 
+// Tạo instance axios
 export const AdminAPI = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
+// Hàm để lấy access token từ cookie hoặc sessionStorage
+const getAccessToken = () => {
+  // Bạn có thể lấy token từ cookie hoặc sessionStorage
+  return sessionStorage.getItem("access_token");
+};
+
+// Interceptor để tự động thêm token vào các yêu cầu
+AdminAPI.interceptors.request.use(
+  (config) => {
+    const token = getAccessToken();
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const getAllTemplates = async (page = 1, limit = 12) => {
   try {
     const response = await AdminAPI.get(
       `/templates?page=${page}&limit=${limit}`
     );
-    return response.data;
+    return response.data?.data;
   } catch (error) {
     console.error("Error fetching templates:", error);
     throw error.response?.data || { message: "Failed to fetch templates" };
@@ -80,55 +100,13 @@ export const deleteTemplateById = async (id) => {
   }
 };
 
-export const saveHeaderSection = async (headerSectionData) => {
+export const createSection = async (sectionData) => {
   try {
-    const response = await AdminAPI.post("/header-sections", headerSectionData);
-    console.log("Header section saved successfully:", response.data);
+    const response = await AdminAPI.post("/sections", sectionData);
+    return response.data;
   } catch (error) {
-    console.error("Error saving header section:", error);
-  }
-};
-
-export const saveAboutSection = async (aboutSectionData) => {
-  try {
-    const response = await AdminAPI.post("/about-sections", aboutSectionData);
-    console.log("About section saved successfully:", response.data);
-  } catch (error) {
-    console.error("Error saving header section:", error);
-  }
-};
-
-export const saveGallerySection = async (gallerySectionData) => {
-  try {
-    const response = await AdminAPI.post(
-      "/gallery-section",
-      gallerySectionData
-    );
-    console.log("Gallery section saved successfully:", response.data);
-  } catch (error) {
-    console.error("Error saving header section:", error);
-  }
-};
-export const saveGuestBookSection = async (guestBookSectionData) => {
-  try {
-    const response = await AdminAPI.post(
-      "/guestbook-section",
-      guestBookSectionData
-    );
-    console.log("GuestBook section saved successfully:", response.data);
-  } catch (error) {
-    console.error("Error saving header section:", error);
-  }
-};
-export const saveEventDetailsSection = async (eventDetailsSectionData) => {
-  try {
-    const response = await AdminAPI.post(
-      "/event-details",
-      eventDetailsSectionData
-    );
-    console.log("Event Details section saved successfully:", response.data);
-  } catch (error) {
-    console.error("Error saving header section:", error);
+    console.error("Error creating section:", error);
+    throw error.response?.data || { message: "Failed to create section" };
   }
 };
 
@@ -138,8 +116,5 @@ export default {
   createTemplate,
   updateTemplate,
   deleteTemplateById,
-  saveHeaderSection,
-  saveGallerySection,
-  saveAboutSection,
-  saveGuestBookSection,
+  createSection,
 };

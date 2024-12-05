@@ -20,7 +20,7 @@ const TemplateManagement = () => {
     const fetchTemplates = async () => {
       try {
         const response = await getAllTemplates(1);
-        setTemplates(response.data.data);
+        setTemplates(response.data);
       } catch (error) {
         console.error("Error fetching templates:", error);
       } finally {
