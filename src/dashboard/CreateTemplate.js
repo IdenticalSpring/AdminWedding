@@ -124,12 +124,11 @@ const CreateTemplate = () => {
   };
 
   const saveTemplate = async () => {
-    if (!selectedWedding) {
-      showSnackbar("Please select a wedding", "warning");
-      return;
-    }
+    // if (!selectedWedding) {
+    //   showSnackbar("Please select a wedding", "warning");
+    //   return;
+    // }
 
-    // Define the order of sections
     const orderedSections = [
       {
         sectionType: "header-section",
@@ -290,45 +289,14 @@ const CreateTemplate = () => {
                 position: "relative",
               }}
             >
-              <Typography variant="h4" align="center" sx={{ pt: 2 }}>
-                Create Template
-              </Typography>
-              {/* Dropdown for weddings */}
-              <FormControl sx={{ m: 2, minWidth: 200 }}>
-                <InputLabel id="wedding-dropdown-label">
-                  Select Wedding
-                </InputLabel>
-                <Select
-                  labelId="wedding-dropdown-label"
-                  value={selectedWedding}
-                  onChange={(e) => setSelectedWedding(e.target.value)}
-                  displayEmpty
-                >
-                  {weddings.map((wedding) => (
-                    <MenuItem key={wedding.id} value={wedding.id}>
-                      {`${wedding.brideName} & ${wedding.groomName}`}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <Button
+              {/* <Button
                 variant="contained"
                 color="primary"
                 onClick={addSection}
                 sx={{ position: "absolute", top: "10px", right: "100px" }}
               >
                 Add Section
-              </Button>
-
-              <Button
-                variant="contained"
-                color="success"
-                onClick={saveTemplate}
-                sx={{ position: "absolute", top: "10px", right: "10px" }}
-              >
-                Save Template
-              </Button>
+              </Button> */}
 
               <Box
                 sx={{
@@ -351,6 +319,9 @@ const CreateTemplate = () => {
         <Box
           sx={{
             position: "fixed",
+            display: "flex",
+            flexDirection: "row",
+            gap: "10px",
             bottom: "20px",
             left: "50%",
             transform: "translateX(-50%)",
@@ -368,6 +339,14 @@ const CreateTemplate = () => {
             }}
           >
             Add Section
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={saveTemplate}
+            sx={{ position: "absolute", top: "10px", right: "10px" }}
+          >
+            Save Template
           </Button>
         </Box>
       </Box>
