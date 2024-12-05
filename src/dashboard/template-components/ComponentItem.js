@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Box, Menu, MenuItem } from "@mui/material";
 import { handleStyle } from "../../utils/handStyles.js";
 
-const ComponentItem = ({ component, handleDelete }) => {
+const ComponentItem = ({ component, handleDelete, setActiveItem, setActiveStyles, active }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [dragging, setDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -11,6 +12,12 @@ const ComponentItem = ({ component, handleDelete }) => {
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const handleClick = (e) => {
+    e.stopPropagation(); 
+    setActiveItem(); 
+    setActiveStyles(); 
+  }
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
@@ -69,7 +76,6 @@ const ComponentItem = ({ component, handleDelete }) => {
         break;
     }
 
-    // Update the component's position and size
     component.style = {
       ...component.style,
       width: newWidth,
@@ -118,6 +124,7 @@ const ComponentItem = ({ component, handleDelete }) => {
       x: e.clientX - component.style.left,
       y: e.clientY - component.style.top,
     });
+    document.body.style.userSelect = "none";
   };
 
   const handleDrag = (e) => {
@@ -135,6 +142,7 @@ const ComponentItem = ({ component, handleDelete }) => {
 
   const handleDragEnd = () => {
     setDragging(false);
+    document.body.style.userSelect = "auto";
   };
 
   return (
@@ -147,7 +155,7 @@ const ComponentItem = ({ component, handleDelete }) => {
         height: component.style.height,
         fontSize: component.style.fontSize,
         color: component.style.color,
-        border: isHovered ? "1px solid #f50057" : "1px solid #ddd",
+        border: isHovered || active ? "1px solid #f50057" : "1px solid #ddd",
         backgroundColor: "#fff",
         display: "flex",
         alignItems: "center",
@@ -157,6 +165,7 @@ const ComponentItem = ({ component, handleDelete }) => {
         transition: "border 0.3s ease",
         borderRadius: component.type === "circle" ? "50%" : "0%",
       }}
+      onDoubleClick={handleClick}
       onMouseDown={handleDragStart}
       onMouseMove={handleDrag}
       onMouseUp={handleDragEnd}
@@ -171,7 +180,7 @@ const ComponentItem = ({ component, handleDelete }) => {
       {component.type === "image" && <span>Image</span>}
       {component.type === "button" && <button>Button</button>}
 
-      {isHovered && (
+      {isHovered || active && (
         <>
           <Box
             sx={handleStyle("top", "left")}

@@ -2,14 +2,14 @@ import React from 'react';
 import { Box, TextField, Typography } from '@mui/material';
 
 const StyleEditor = ({ activeStyles, handleStyleChange }) => {
-  if (!activeStyles) return null;
+  if (!activeStyles || Object.keys(activeStyles).length === 0) return null;
 
   return (
     <Box
       sx={{
-        padding: 2,
+        padding: 0.5,
         borderTop: '1px solid #ddd',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#fcfcfc',
         mt: 2,
         width: '100%',
       }}

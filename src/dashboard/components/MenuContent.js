@@ -16,11 +16,11 @@ import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import { QuestionMarkRounded } from '@mui/icons-material';
 
 const mainListItems = [
-  { text: 'Home', icon: <HomeRoundedIcon />, link: '/' },
-  { text: 'Analytics', icon: <AnalyticsRoundedIcon />, link: '/analytics' },
-  { text: 'Clients', icon: <PeopleRoundedIcon />, link: '/clients' }, // Đường dẫn đúng
-  { text: 'Tasks', icon: <AssignmentRoundedIcon />, link: '/tasks' },
-  { text: 'Questions', icon: <QuestionMarkRounded />, link: '/question' },
+  { text: 'Home', icon: <HomeRoundedIcon />, link: '/dashboard' },
+  // { text: 'Analytics', icon: <AnalyticsRoundedIcon />, link: '/analytics' },
+  { text: 'Users', icon: <PeopleRoundedIcon />, link: '/clients' }, // Đường dẫn đúng
+  // { text: 'Tasks', icon: <AssignmentRoundedIcon />, link: '/tasks' },
+  // { text: 'Questions', icon: <QuestionMarkRounded />, link: '/question' },
   { text: 'Orders', icon: <AssignmentRoundedIcon />, link: '/order' },
   { text: 'Template', icon: <AssignmentRoundedIcon />, link: '/template' },
 ];

@@ -22,6 +22,8 @@ import {
   saveGallerySection,
   saveGuestBookSection,
 } from "../service/templateService";
+import Headerv2 from "./template-components/Headerv2";
+import StyleEditor from "./template-components/StyleEditor";
 
 const CreateTemplate = () => {
   const [sections, setSections] = useState([]);
@@ -209,57 +211,82 @@ const CreateTemplate = () => {
     }
   };
 
+  const handleCanvasClick = (event) => {
+    if (
+      event.target.id === "canvas" ||
+      event.target.closest(".component") === null
+    ) {
+      setActiveItem(null);
+      setActiveStyles({});
+    }
+  };
+
+  const handleComponentClick = (component) => {
+    setActiveItem(component);
+    setActiveStyles(component.style || {});
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <Box
         sx={{
           display: "flex",
+          flexDirection: "column",
           height: "100vh",
-          overflow: "hidden",
-          flexDirection: "row-reverse",
+          backgroundColor: "#FCFCFC",
         }}
+        onClick={handleCanvasClick}
       >
-        {/* Toolbar */}
-        <Toolbar
-          activeStyles={activeStyles}
-          handleStyleChange={handleStyleChange}
-        />
-
-        {/* Canvas area */}
         <Box
-          onWheel={handleWheel}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
           sx={{
-            flex: 1,
-            backgroundColor: "#f9f9f9",
-            cursor: isPanning.current ? "grabbing" : "grab",
+            position: "fixed",
+            top: 0,
+            width: "87%",
+            zIndex: 1000,
+            backgroundColor: "#FCFCFC",
           }}
         >
+          <Headerv2 />
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            height: "100%",
+            overflow: "hidden",
+            flexDirection: "row-reverse",
+          }}
+        >
+          <Toolbar
+            activeStyles={activeStyles}
+            handleStyleChange={handleStyleChange}
+          />
           <Box
+            id="canvas"
+            onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
             sx={{
-              transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`,
-              transformOrigin: "center",
-              transition: isPanning.current
-                ? "none"
-                : "transform 0.2s ease-out",
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              flex: 1,
+              backgroundColor: "#FCFCFC",
+              cursor: isPanning.current ? "grabbing" : "grab",
+              position: "relative",
             }}
           >
             <Box
               sx={{
-                width: "800px",
-                height: "600px",
-                backgroundColor: "#fff",
-                border: "1px solid #ddd",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                borderRadius: 2,
+                transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`,
+                transformOrigin: "center",
+                transition: isPanning.current
+                  ? "none"
+                  : "transform 0.2s ease-out",
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 position: "relative",
               }}
             >
@@ -303,14 +330,45 @@ const CreateTemplate = () => {
                 Save Template
               </Button>
 
-              <Canvas
-                sections={sections}
-                setSections={setSections}
-                setActiveItem={setActiveItem}
-                setActiveStyles={setActiveStyles}
-              />
+              <Box
+                sx={{
+                  width: "800px",
+                  height: "600px",
+                  position: "relative",
+                }}
+              >
+                <Canvas
+                  sections={sections}
+                  setSections={setSections}
+                  setActiveItem={handleComponentClick}
+                  activeItem={activeItem}
+                  setActiveStyles={setActiveStyles}
+                />
+              </Box>
             </Box>
           </Box>
+        </Box>
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={addSection}
+            sx={{
+              padding: "10px 20px",
+              borderRadius: "5px",
+              fontSize: "16px",
+              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            Add Section
+          </Button>
         </Box>
       </Box>
 

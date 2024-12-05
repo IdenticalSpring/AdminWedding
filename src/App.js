@@ -8,13 +8,13 @@ import MainGrid from "./dashboard/components/MainGrid";
 import PrivateRoute from "./service/PrivateRoute";
 import CreateTemplate from "./dashboard/CreateTemplate";
 import TemplateManagement from "./dashboard/Template";
+import DashboardLayoutv2 from "./dashboard/Dashboardv2";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<SignIn />} />
-        {/* <Route path="/sign-up" element={<SignUp />} /> */}
         <Route
           path="/dashboard"
           element={
@@ -39,9 +39,11 @@ function App() {
         <Route
           path="/create-template"
           element={
-            <PrivateRoute>
-              <CreateTemplate />
-            </PrivateRoute>
+            <DashboardLayoutv2>
+              <PrivateRoute>
+                <CreateTemplate />
+              </PrivateRoute>
+            </DashboardLayoutv2>
           }
         />
       </Routes>
