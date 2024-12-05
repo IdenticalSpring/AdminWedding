@@ -1,9 +1,27 @@
-import React, { useState, useRef } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Box,
+  Button,
+  Typography,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "./template-components/Canvas";
 import Toolbar from "./template-components/ToolBar";
+import { getAllWedding } from "../service/weddingService";
+import {
+  saveHeaderSection,
+  saveAboutSection,
+  saveEventDetailsSection,
+  saveGallerySection,
+  saveGuestBookSection,
+} from "../service/templateService";
 
 const CreateTemplate = () => {
   const [sections, setSections] = useState([]);
@@ -11,8 +29,35 @@ const CreateTemplate = () => {
   const [activeStyles, setActiveStyles] = useState({});
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [weddings, setWeddings] = useState([]);
+  const [selectedWedding, setSelectedWedding] = useState("");
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
+
   const isPanning = useRef(false);
   const startPoint = useRef({ x: 0, y: 0 });
+
+  // Fetch wedding data on mount
+  useEffect(() => {
+    const fetchWeddingData = async () => {
+      try {
+        const data = await getAllWedding();
+        setWeddings(data.data);
+      } catch (error) {
+        console.error("Failed to fetch wedding data:", error);
+        showSnackbar("Failed to load wedding data", "error");
+      }
+    };
+
+    fetchWeddingData();
+  }, []);
+
+  const showSnackbar = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
 
   const handleStyleChange = (key, value) => {
     if (!activeItem) return;
@@ -76,6 +121,94 @@ const CreateTemplate = () => {
     setSections([...sections, newSection]);
   };
 
+  const saveTemplate = async () => {
+    if (!selectedWedding) {
+      showSnackbar("Please select a wedding", "warning");
+      return;
+    }
+
+    // Define the order of sections
+    const orderedSections = [
+      {
+        sectionType: "header-section",
+        data: {
+          weddingId: selectedWedding,
+          metaData: JSON.stringify(
+            sections.filter((section) => section.type === "header-section")
+          ),
+        },
+      },
+      {
+        sectionType: "about-section",
+        data: {
+          weddingId: selectedWedding,
+          metaData: JSON.stringify(
+            sections.filter((section) => section.type === "about-section")
+          ),
+        },
+      },
+      {
+        sectionType: "gallery-section",
+        data: {
+          weddingId: selectedWedding,
+          metaData: JSON.stringify(
+            sections.filter((section) => section.type === "gallery-section")
+          ),
+        },
+      },
+      {
+        sectionType: "event-details",
+        data: {
+          weddingId: selectedWedding,
+          metaData: JSON.stringify(
+            sections.filter((section) => section.type === "event-details")
+          ),
+        },
+      },
+      {
+        sectionType: "guestbook-section",
+        data: {
+          weddingId: selectedWedding,
+          metaData: JSON.stringify(
+            sections.filter((section) => section.type === "guestbook-section")
+          ),
+        },
+      },
+    ];
+
+    try {
+      // Save each section in order
+      for (let i = 0; i < orderedSections.length; i++) {
+        const { sectionType, data } = orderedSections[i];
+
+        // Call the appropriate save function based on the sectionType
+        switch (sectionType) {
+          case "header-section":
+            await saveHeaderSection(data);
+            break;
+          case "about-section":
+            await saveAboutSection(data);
+            break;
+          case "gallery-section":
+            await saveGallerySection(data);
+            break;
+          case "event-details":
+            await saveEventDetailsSection(data);
+            break;
+          case "guestbook-section":
+            await saveGuestBookSection(data);
+            break;
+          default:
+            break;
+        }
+      }
+      showSnackbar("Template saved successfully!", "success");
+    } catch (error) {
+      console.error("Error saving template:", error);
+      showSnackbar("Failed to save template", "error");
+    }
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <Box
@@ -133,14 +266,43 @@ const CreateTemplate = () => {
               <Typography variant="h4" align="center" sx={{ pt: 2 }}>
                 Create Template
               </Typography>
+              {/* Dropdown for weddings */}
+              <FormControl sx={{ m: 2, minWidth: 200 }}>
+                <InputLabel id="wedding-dropdown-label">
+                  Select Wedding
+                </InputLabel>
+                <Select
+                  labelId="wedding-dropdown-label"
+                  value={selectedWedding}
+                  onChange={(e) => setSelectedWedding(e.target.value)}
+                  displayEmpty
+                >
+                  {weddings.map((wedding) => (
+                    <MenuItem key={wedding.id} value={wedding.id}>
+                      {`${wedding.brideName} & ${wedding.groomName}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
               <Button
                 variant="contained"
                 color="primary"
                 onClick={addSection}
-                sx={{ position: "absolute", top: "10px", right: "10px" }}
+                sx={{ position: "absolute", top: "10px", right: "100px" }}
               >
                 Add Section
               </Button>
+
+              <Button
+                variant="contained"
+                color="success"
+                onClick={saveTemplate}
+                sx={{ position: "absolute", top: "10px", right: "10px" }}
+              >
+                Save Template
+              </Button>
+
               <Canvas
                 sections={sections}
                 setSections={setSections}
@@ -151,6 +313,21 @@ const CreateTemplate = () => {
           </Box>
         </Box>
       </Box>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </DndProvider>
   );
 };
