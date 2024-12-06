@@ -9,6 +9,7 @@ import PrivateRoute from "./service/PrivateRoute";
 import CreateTemplate from "./dashboard/CreateTemplate";
 import TemplateManagement from "./dashboard/Template";
 import DashboardLayoutv2 from "./dashboard/Dashboardv2";
+import StyleEditor from "./dashboard/template-components/StyleEditor";
 
 function App() {
   return (
