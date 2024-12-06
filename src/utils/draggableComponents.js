@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useDrag } from "react-dnd";
 
@@ -34,7 +34,7 @@ export const TextBox = () => {
 };
 
 // Image Box
-export const ImageBox = () => {
+export const ImageBox = ({ imageUrl }) => {
   const [, dragRef] = useDrag(() => ({
     type: "component",
     item: { type: "image" },
@@ -45,7 +45,7 @@ export const ImageBox = () => {
       ref={dragRef}
       sx={{
         ...commonStyle,
-        backgroundImage: "url('https://via.placeholder.com/50')", // Placeholder image
+        backgroundImage: `url(${imageUrl})`, // Placeholder image
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundColor: "#f0f0f0",
@@ -192,7 +192,8 @@ export const Hexagon = () => {
         ...commonStyle,
         width: "auto",
         height: "auto",
-        clipPath: "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
+        clipPath:
+          "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
         backgroundColor: "white",
       }}
     />
@@ -200,4 +201,3 @@ export const Hexagon = () => {
 };
 
 // You can define 13 more shapes similarly with unique properties for your use case.
-

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Button, Box } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import EditIcon from "@mui/icons-material/Edit";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import Header from "./components/Header";
@@ -40,8 +40,8 @@ const TemplateManagement = () => {
     }
   };
 
-  const handleEdit = (id) => {
-    alert(`Edit template with ID: ${id}`);
+  const handleView = (id) => {
+    navigate(`/view-template/${id}`); // Truyền templateId vào đường dẫn
   };
 
   const handleAddTemplate = () => {
@@ -58,9 +58,9 @@ const TemplateManagement = () => {
       flex: 1,
       getActions: (params) => [
         <GridActionsCellItem
-          icon={<EditIcon />}
-          label="Edit"
-          onClick={() => handleEdit(params.id)}
+          icon={<RemoveRedEyeIcon />}
+          label="View"
+          onClick={() => handleView(params.id)}
         />,
         <GridActionsCellItem
           icon={<DeleteIcon />}

@@ -2,7 +2,13 @@ import React from "react";
 import { Box } from "@mui/material";
 import Section from "./Section";
 
-const Canvas = ({ sections, setSections, setActiveItem, setActiveStyles, activeItem }) => {
+const Canvas = ({
+  sections,
+  setSections,
+  setActiveItem,
+  setActiveStyles,
+  activeItem,
+}) => {
   return (
     <Box
       sx={{

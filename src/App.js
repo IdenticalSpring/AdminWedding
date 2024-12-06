@@ -9,7 +9,7 @@ import PrivateRoute from "./service/PrivateRoute";
 import CreateTemplate from "./dashboard/CreateTemplate";
 import TemplateManagement from "./dashboard/Template";
 import DashboardLayoutv2 from "./dashboard/Dashboardv2";
-import StyleEditor from "./dashboard/template-components/StyleEditor";
+import ViewTemplate from "./dashboard/ViewTemplate";
 
 function App() {
   return (
@@ -43,6 +43,16 @@ function App() {
             <DashboardLayoutv2>
               <PrivateRoute>
                 <CreateTemplate />
+              </PrivateRoute>
+            </DashboardLayoutv2>
+          }
+        />
+        <Route
+          path="/view-template/:templateId"
+          element={
+            <DashboardLayoutv2>
+              <PrivateRoute>
+                <ViewTemplate />
               </PrivateRoute>
             </DashboardLayoutv2>
           }
