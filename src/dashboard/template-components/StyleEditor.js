@@ -1,5 +1,39 @@
-import React from 'react';
-import { Box, TextField, Typography } from '@mui/material';
+import React from "react";
+import {
+  Box,
+  TextField,
+  Typography,
+  Slider,
+  InputAdornment,
+} from "@mui/material";
+
+const StyleInput = ({ label, value, onChange, type, unit, min, max }) => (
+  <Box>
+    <TextField
+      label={label}
+      value={value || ""}
+      onChange={(e) => onChange(e.target.value)}
+      size="small"
+      fullWidth
+      type={type}
+      InputProps={{
+        endAdornment: unit ? (
+          <InputAdornment position="end">{unit}</InputAdornment>
+        ) : null,
+      }}
+    />
+    {type === "number" && (
+      <Slider
+        value={value || min}
+        onChange={(e, value) => onChange(value)}
+        min={min}
+        max={max}
+        valueLabelDisplay="auto"
+        sx={{ mt: 1 }}
+      />
+    )}
+  </Box>
+);
 
 const StyleEditor = ({ activeStyles, handleStyleChange }) => {
   if (!activeStyles || Object.keys(activeStyles).length === 0) return null;
@@ -7,51 +41,55 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
   return (
     <Box
       sx={{
-        padding: 0.5,
-        borderTop: '1px solid #ddd',
-        backgroundColor: '#fcfcfc',
+        padding: 1,
+        borderTop: "1px solid #ddd",
+        backgroundColor: "#fcfcfc",
         mt: 2,
-        width: '100%',
+        width: "100%",
       }}
     >
-      <Typography variant='h6' gutterBottom>
+      <Typography variant="h6" gutterBottom>
         Edit Styles
       </Typography>
-      <Box sx={{ display: 'flex', flexDirection:'column', gap: 2 }}>
-        <TextField
-          label='Width'
-          value={activeStyles.width || ''}
-          onChange={(e) => handleStyleChange('width', e.target.value)}
-          size='small'
-          fullWidth // TextField spans the full width of its container
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <StyleInput
+          label="Width"
+          value={activeStyles.width}
+          onChange={(value) => handleStyleChange("width", value)}
+          type="number"
+          unit="px"
+          min={0}
+          max={1000}
         />
-        <TextField
-          label='Height'
-          value={activeStyles.height || ''}
-          onChange={(e) => handleStyleChange('height', e.target.value)}
-          size='small'
-          fullWidth
+        <StyleInput
+          label="Height"
+          value={activeStyles.height}
+          onChange={(value) => handleStyleChange("height", value)}
+          type="number"
+          unit="px"
+          min={0}
+          max={1000}
         />
-        <TextField
-          label='Background Color'
-          value={activeStyles.backgroundColor || ''}
-          onChange={(e) => handleStyleChange('backgroundColor', e.target.value)}
-          size='small'
-          fullWidth
+        <StyleInput
+          label="Font Size"
+          value={activeStyles.fontSize}
+          onChange={(value) => handleStyleChange("fontSize", value)}
+          type="number"
+          unit="px"
+          min={8}
+          max={100}
         />
-        <TextField
-          label='Font Size'
-          value={activeStyles.fontSize || ''}
-          onChange={(e) => handleStyleChange('fontSize', e.target.value)}
-          size='small'
-          fullWidth
+        <StyleInput
+          label="Background Color"
+          value={activeStyles.backgroundColor}
+          onChange={(value) => handleStyleChange("backgroundColor", value)}
+          type="color"
         />
-        <TextField
-          label='Color'
-          value={activeStyles.color || ''}
-          onChange={(e) => handleStyleChange('color', e.target.value)}
-          size='small'
-          fullWidth
+        <StyleInput
+          label="Color"
+          value={activeStyles.color}
+          onChange={(value) => handleStyleChange("color", value)}
+          type="color"
         />
       </Box>
     </Box>
