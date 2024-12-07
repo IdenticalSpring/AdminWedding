@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
+  Checkbox,
+  FormControlLabel,
   TextField,
   Typography,
   Slider,
@@ -17,48 +19,58 @@ const StyleInput = ({
   min,
   max,
   options,
+  step = 1,
 }) => (
-  <Box>
-    {type === "select" ? (
-      <TextField
-        select
-        label={label}
-        value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
-        size="small"
-        fullWidth
-      >
-        {options.map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </TextField>
-    ) : (
-      <TextField
-        label={label}
-        value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
-        size="small"
-        fullWidth
-        type={type}
-        InputProps={{
-          endAdornment: unit ? (
-            <InputAdornment position="end">{unit}</InputAdornment>
-          ) : null,
-        }}
-      />
-    )}
-    {type === "number" && (
-      <Slider
-        value={value || min}
-        onChange={(e, value) => onChange(value)}
-        min={min}
-        max={max}
-        valueLabelDisplay="auto"
-        sx={{ mt: 1 }}
-      />
-    )}
+  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+    
+    <Box sx={{ width: "70%" }}>
+      {type === "select" ? (
+        <TextField
+          select
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          size="small"
+          fullWidth
+        >
+          {options.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
+      ) : type === "number" ? (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <TextField
+            value={value || ""}
+            onChange={(e) => onChange(e.target.value)}
+            size="small"
+            fullWidth
+            type="number"
+            InputProps={{
+              endAdornment: unit ? (
+                <InputAdornment position="end">{unit}</InputAdornment>
+              ) : null,
+            }}
+          />
+          <Slider
+            value={Number(value) || min}
+            onChange={(e, newValue) => onChange(newValue)}
+            min={min}
+            max={max}
+            step={step}
+            sx={{ ml: 2, flexGrow: 1 }}
+          />
+        </Box>
+      ) : (
+        <TextField
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          size="small"
+          fullWidth
+          type={type}
+        />
+      )}
+    </Box>
   </Box>
 );
 
@@ -68,77 +80,78 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
   return (
     <Box
       sx={{
-        padding: 1,
-        borderTop: "1px solid #ddd",
-        backgroundColor: "#fcfcfc",
-        mt: 2,
-        width: "100%",
-        maxHeight: 400, // Giới hạn chiều cao
-        overflow: "auto", // Kích hoạt scroll
-        border: "1px solid #ccc", // Thêm viền để phân biệt
-        borderRadius: 1, // Bo góc
+        padding: 0.5,
+        backgroundColor: "#f9f9f9",
+        maxHeight: 400,
+        overflowY: "auto",
       }}
     >
-      <Typography variant="h6" gutterBottom>
-        Edit Styles
-      </Typography>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {/* Width */}
-        <StyleInput
-          label="Width"
-          value={activeStyles.width}
-          onChange={(value) => handleStyleChange("width", value)}
-          type="number"
-          unit="px"
-          min={0}
-          max={1000}
+      
+      <Box>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={!!activeStyles.fill}
+              onChange={(e) => handleStyleChange("fill", e.target.checked)}
+            />
+          }
+          label="Fill"
+          sx={{ mb: 1 }}
         />
-        {/* Height */}
-        <StyleInput
-          label="Height"
-          value={activeStyles.height}
-          onChange={(value) => handleStyleChange("height", value)}
-          type="number"
-          unit="px"
-          min={0}
-          max={1000}
+        {activeStyles.fill && (
+          <StyleInput
+            label="Fill Color"
+            value={activeStyles.fillColor}
+            onChange={(value) => handleStyleChange("fillColor", value)}
+            type="color"
+          />
+        )}
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={!!activeStyles.gradient}
+              onChange={(e) => handleStyleChange("gradient", e.target.checked)}
+            />
+          }
+          label="Gradient"
+          sx={{ mb: 1 }}
         />
-        {/* Font Size */}
+
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Line
+        </Typography>
         <StyleInput
-          label="Font Size"
-          value={activeStyles.fontSize}
-          onChange={(value) => handleStyleChange("fontSize", value)}
-          type="number"
-          unit="px"
-          min={8}
-          max={100}
-        />
-        {/* Background Color */}
-        <StyleInput
-          label="Background Color"
-          value={activeStyles.backgroundColor}
-          onChange={(value) => handleStyleChange("backgroundColor", value)}
+          label="Line Color"
+          value={activeStyles.lineColor}
+          onChange={(value) => handleStyleChange("lineColor", value)}
           type="color"
         />
-        {/* Text Color */}
         <StyleInput
-          label="Color"
-          value={activeStyles.color}
-          onChange={(value) => handleStyleChange("color", value)}
-          type="color"
+          label="Line Width"
+          value={activeStyles.lineWidth}
+          onChange={(value) => handleStyleChange("lineWidth", value)}
+          type="number"
+          unit="pt"
+          min={0}
+          max={10}
         />
-        {/* Opacity */}
+
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Opacity
+        </Typography>
         <StyleInput
           label="Opacity"
           value={activeStyles.opacity}
           onChange={(value) => handleStyleChange("opacity", value)}
+          type="number"
           min={0}
-          max={1}
-          step={0.1}
+          max={100}
+          step={1}
+          unit="%"
         />
-        {/* Border Settings */}
-        <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
-          Border Settings
+
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Border
         </Typography>
         <StyleInput
           label="Border Width"

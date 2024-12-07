@@ -90,9 +90,9 @@ const TemplateManagement = () => {
     <>
       <Header />
       <Box sx={{ padding: 2 }}>
-        <Typography variant="h4" gutterBottom>
+        {/* <Typography variant="h4" gutterBottom>
           Template Management
-        </Typography>
+        </Typography> */}
         <Box
           sx={{
             display: "flex",
