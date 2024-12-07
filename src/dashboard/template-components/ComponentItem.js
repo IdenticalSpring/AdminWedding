@@ -172,11 +172,11 @@ const ComponentItem = ({
         top: component.style.top,
         left: component.style.left,
         width: component.style.width,
-        height: component.style.height,
+        height: component.type === "line" ? "5" : component.style.height,
         fontSize: component.style.fontSize,
         color: component.style.color,
         border: isHovered || active ? "1px solid #f50057" : "1px solid #ddd",
-        backgroundColor: "#fff",
+        backgroundColor: component.type === "line" ? "#000" : "#fff",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -205,8 +205,6 @@ const ComponentItem = ({
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
       )}
-      {component.type === "button" && <button>Button</button>}
-
       {isHovered ||
         (active && (
           <>
