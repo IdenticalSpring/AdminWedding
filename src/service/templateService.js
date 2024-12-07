@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Tạo instance axios
 export const AdminAPI = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: `${process.env.REACT_APP_API_URL}/admin`,
   headers: {
     "Content-Type": "application/json",
   },
