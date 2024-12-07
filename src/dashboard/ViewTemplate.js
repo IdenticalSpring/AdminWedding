@@ -61,7 +61,12 @@ const ViewTemplate = () => {
               width: component.style.width,
               height: component.style.height,
               borderRadius: "50%",
-              backgroundColor: component.style.color,
+              backgroundColor: component.style.backgroundColor,
+              borderColor: component.style.borderColor || "",
+              borderWidth: component.style.borderWidth || "0px",
+              borderColor: component.style.borderColor || "",
+              borderStyle: component.style.borderStyle || "none",
+              opacity: component.style.opacity || "0",
             }}
           />
         );
@@ -75,7 +80,13 @@ const ViewTemplate = () => {
               top: component.style.top,
               width: component.style.width,
               height: component.style.height,
-              backgroundColor: component.style.color || "#ccc", // Default color if not provided
+              backgroundColor: component.style.backgroundColor || "#ccc", // Default color if not provided
+              borderRadius: component.style.borderRadius || "0%",
+              borderColor: component.style.borderColor || "",
+              borderWidth: component.style.borderWidth || "0px",
+              borderColor: component.style.borderColor || "",
+              borderStyle: component.style.borderStyle || "none",
+              opacity: component.style.opacity || "0",
             }}
           />
         );
@@ -89,18 +100,15 @@ const ViewTemplate = () => {
               top: component.style.top,
               width: component.style.width,
               height: component.style.height,
-              overflow: "hidden", // Ensure the image doesn't overflow the box
+              overflow: "hidden",
+              borderRadius: component.style.borderRadius || "0%",
+              borderColor: component.style.borderColor || "",
+              borderWidth: component.style.borderWidth || "0px",
+              borderColor: component.style.borderColor || "",
+              borderStyle: component.style.borderStyle || "none",
+              opacity: component.style.opacity || "0",
             }}
           >
-            {/* <img
-              src={component.style.src || ""}
-              alt="image component"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover", // Adjust image to fit box
-              }}
-            /> */}
             <img
               src={component.src.startsWith("data:image") ? component.src : ""}
               alt="image component"
@@ -112,7 +120,23 @@ const ViewTemplate = () => {
             />
           </Box>
         );
-      // Add other cases here to handle different component types
+      // Handle line case
+      case "line":
+        return (
+          <Box
+            key={component.id}
+            sx={{
+              position: "absolute",
+              left: component.style.left,
+              top: component.style.top,
+              width: component.style.width, // Width of the line
+              height: component.style.height || 5, // Line height, default to 1px if not specified
+              backgroundColor: component.style.color, // Line color
+              opacity: component.style.opacity || 1, // Set opacity
+            }}
+          />
+        );
+
       default:
         return null;
     }

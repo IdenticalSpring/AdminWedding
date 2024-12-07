@@ -134,7 +134,7 @@ const CreateTemplate = () => {
   };
 
   const handleCanvasClick = (event) => {
-    if (event.target.id === "canvas" || !event.target.closest(".component")) {
+    if (event.target.id === "canvas") {
       setActiveItem(null);
       setActiveStyles({});
     }

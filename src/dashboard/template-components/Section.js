@@ -28,7 +28,7 @@ const Section = ({
         style: {
           ...dropPosition,
           width: 100,
-          height: 50,
+          height: item.type === "line" ? 5 : 50,
           fontSize: 16,
           color: "#000",
         },

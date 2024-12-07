@@ -34,6 +34,7 @@ const Toolbar = ({ activeStyles, handleStyleChange }) => {
         <ImageBox />
         <Rectangle />
         <Circle />
+        <Line />
       </Box>
 
       {activeStyles && (
