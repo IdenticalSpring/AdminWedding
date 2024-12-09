@@ -55,7 +55,7 @@ const CreateTemplate = () => {
 
       // Bước 2: Cập nhật các section với templateId và metadata
       const sectionsWithMetadata = sections.map((section) => ({
-        id: section.id,
+        // Đảm bảo truyền đúng templateId vào mỗi section
         templateId: templateID,
         metadata: {
           components: section.components, // Đóng gói các components vào metadata
@@ -66,17 +66,17 @@ const CreateTemplate = () => {
 
       // Bước 3: Lưu từng section vào cơ sở dữ liệu
       for (const section of sectionsWithMetadata) {
-        await createSection(section);
+        await createSection(section); // Lưu mỗi section với đúng templateId
       }
 
       // Bước 4: Hiển thị thông báo thành công
       showSnackbar("Lưu template và sections thành công!", "success");
     } catch (error) {
-      // Xử lý lỗi
       console.error("Lỗi khi lưu template và sections:", error);
       showSnackbar(error.message || "Lưu thất bại!", "error");
     }
   };
+
 
   const handleStyleChange = (key, value) => {
     if (!activeItem) return;
