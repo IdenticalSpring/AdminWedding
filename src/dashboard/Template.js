@@ -51,6 +51,7 @@ const TemplateManagement = () => {
   const columns = [
     { field: "name", headerName: "Name", flex: 1 },
     { field: "description", headerName: "Description", flex: 2 },
+    { field: "accessType", headerName: "Access Type", flex: 2 },
     {
       field: "actions",
       headerName: "Actions",

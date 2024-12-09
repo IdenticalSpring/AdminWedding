@@ -174,16 +174,24 @@ const ComponentItem = ({
         width: component.style.width,
         height: component.type === "line" ? "5" : component.style.height,
         fontSize: component.style.fontSize,
-        color: component.style.color,
+        color: component.style.fillColor,
         border: isHovered || active ? "1px solid #f50057" : "1px solid #ddd",
-        backgroundColor: component.type === "line" ? "#000" : "#fff",
+        backgroundColor:
+          component.type === "line" ? "#000" : component.style.fillColor,
         display: "flex",
+        lineColor: component.style.lineColor,
+        LineWidth: component.style.LineWidth,
+        opacity: component.style.opacity / 100,
+        borderWidth: component.style.borderWidth,
+        borderStyle: component.style.borderStyle,
+        borderColor: component.style.borderColor,
         alignItems: "center",
         justifyContent: "center",
         cursor: "move",
         padding: 1,
         transition: "border 0.3s ease",
-        borderRadius: component.type === "circle" ? "50%" : "0%",
+        borderRadius:
+          component.type === "circle" ? "50%" : component.style.borderRadius,
         src: component.type === "image" ? imageSrc : "",
       }}
       onDoubleClick={handleClick}

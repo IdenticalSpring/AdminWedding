@@ -17,7 +17,6 @@ import Toolbar from "./template-components/ToolBar";
 import { createTemplate, createSection } from "../service/templateService";
 
 import Headerv2 from "./template-components/Headerv2";
-import StyleEditor from "./template-components/StyleEditor";
 
 const CreateTemplate = () => {
   const [sections, setSections] = useState([]);
@@ -178,6 +177,8 @@ const CreateTemplate = () => {
           <Toolbar
             activeStyles={activeStyles}
             handleStyleChange={handleStyleChange}
+            templateData={templateData}
+            setTemplateData={setTemplateData}
           />
           <Box
             id="canvas"
