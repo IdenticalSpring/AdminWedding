@@ -61,12 +61,12 @@ const ViewTemplate = () => {
               width: component.style.width,
               height: component.style.height,
               borderRadius: "50%",
-              backgroundColor: component.style.backgroundColor,
+              backgroundColor: component.style.fillColor,
               borderColor: component.style.borderColor || "",
               borderWidth: component.style.borderWidth || "0px",
               borderColor: component.style.borderColor || "",
               borderStyle: component.style.borderStyle || "none",
-              opacity: component.style.opacity || "0",
+              opacity: component.style.opacity / 100 || "1",
             }}
           />
         );
@@ -80,13 +80,13 @@ const ViewTemplate = () => {
               top: component.style.top,
               width: component.style.width,
               height: component.style.height,
-              backgroundColor: component.style.backgroundColor || "#ccc", // Default color if not provided
+              backgroundColor: component.style.fillColor || "#ccc", // Default color if not provided
               borderRadius: component.style.borderRadius || "0%",
               borderColor: component.style.borderColor || "",
               borderWidth: component.style.borderWidth || "0px",
               borderColor: component.style.borderColor || "",
               borderStyle: component.style.borderStyle || "none",
-              opacity: component.style.opacity || "0",
+              opacity: component.style.opacity / 100 || "1",
             }}
           />
         );
@@ -106,7 +106,7 @@ const ViewTemplate = () => {
               borderWidth: component.style.borderWidth || "0px",
               borderColor: component.style.borderColor || "",
               borderStyle: component.style.borderStyle || "none",
-              opacity: component.style.opacity || "0",
+              opacity: component.style.opacity / 100 || "1",
             }}
           >
             <img
@@ -131,8 +131,8 @@ const ViewTemplate = () => {
               top: component.style.top,
               width: component.style.width, // Width of the line
               height: component.style.height || 5, // Line height, default to 1px if not specified
-              backgroundColor: component.style.color, // Line color
-              opacity: component.style.opacity || 1, // Set opacity
+              backgroundColor: component.style.lineColor, // Line color
+              opacity: component.style.opacity / 100 || 1, // Set opacity
             }}
           />
         );
@@ -184,10 +184,10 @@ const ViewTemplate = () => {
             {template.description || "No description provided."}
           </Typography>
         </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">Metadata</Typography>
-          <Typography>{template.metaData}</Typography>
-        </Grid>
+        {/* <Grid item xs={12}>
+            <Typography variant="h6">Metadata</Typography>
+            <Typography>{template.metaData}</Typography>
+          </Grid> */}
         <Grid item xs={12}>
           <Typography variant="h6">Sections</Typography>
           {template.sections && template.sections.length > 0 ? (
