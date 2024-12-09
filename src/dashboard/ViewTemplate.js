@@ -43,6 +43,7 @@ const ViewTemplate = () => {
               height: component.style.height,
               fontSize: component.style.fontSize,
               color: component.style.color,
+              backgroundColor: component.style.fillColor,
             }}
           >
             <Typography variant="body1">
@@ -68,7 +69,21 @@ const ViewTemplate = () => {
               borderStyle: component.style.borderStyle || "none",
               opacity: component.style.opacity / 100 || "1",
             }}
-          />
+          >
+            <img
+              src={component.src.startsWith("data:image") ? component.src : ""}
+              alt="image component"
+              style={{
+                width: component.style.width,
+                height: component.style.height,
+                objectFit: "cover",
+                borderRadius:
+                  component.type === "circle"
+                    ? "50%"
+                    : component.style.borderRadius,
+              }}
+            />
+          </Box>
         );
       case "rect":
         return (
@@ -110,11 +125,11 @@ const ViewTemplate = () => {
             }}
           >
             <img
-              src={component.src.startsWith("data:image") ? component.src : ""}
+              src={component.src}
               alt="image component"
               style={{
-                width: "100%",
-                height: "100%",
+                width: component.style.width,
+                height: component.style.height,
                 objectFit: "cover", // Adjust image to fit box
               }}
             />

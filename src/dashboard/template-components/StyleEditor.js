@@ -115,6 +115,15 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
           sx={{ mb: 1 }}
         />
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Color
+        </Typography>
+        <StyleInput
+          label="Color"
+          value={activeStyles.color}
+          onChange={(value) => handleStyleChange("color", value)}
+          type="color"
+        />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Width
         </Typography>
         <StyleInput
