@@ -22,8 +22,7 @@ const StyleInput = ({
   step = 1,
 }) => (
   <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-    
-    <Box sx={{ width: "70%" }}>
+    <Box sx={{ width: "100%" }}>
       {type === "select" ? (
         <TextField
           select
@@ -86,7 +85,6 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
         overflowY: "auto",
       }}
     >
-      
       <Box>
         <FormControlLabel
           control={
@@ -116,9 +114,32 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
           label="Gradient"
           sx={{ mb: 1 }}
         />
-
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
-          Line
+          Width
+        </Typography>
+        <StyleInput
+          label="Width"
+          value={activeStyles.width}
+          onChange={(value) => handleStyleChange("width", value)}
+          type="number"
+          unit="px"
+          min={0}
+          max={1000}
+        />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Height
+        </Typography>
+        <StyleInput
+          label="Height"
+          value={activeStyles.height}
+          onChange={(value) => handleStyleChange("height", value)}
+          type="number"
+          unit="px"
+          min={0}
+          max={1000}
+        />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Line color
         </Typography>
         <StyleInput
           label="Line Color"
@@ -126,6 +147,9 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
           onChange={(value) => handleStyleChange("lineColor", value)}
           type="color"
         />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Line width
+        </Typography>
         <StyleInput
           label="Line Width"
           value={activeStyles.lineWidth}
@@ -151,7 +175,7 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
         />
 
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
-          Border
+          Border width
         </Typography>
         <StyleInput
           label="Border Width"
@@ -162,6 +186,9 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
           min={0}
           max={20}
         />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Border style
+        </Typography>
         <StyleInput
           label="Border Style"
           value={activeStyles.borderStyle}
@@ -179,12 +206,18 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
             "outset",
           ]}
         />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Border color
+        </Typography>
         <StyleInput
           label="Border Color"
           value={activeStyles.borderColor}
           onChange={(value) => handleStyleChange("borderColor", value)}
           type="color"
         />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Border radius
+        </Typography>
         <StyleInput
           label="Border Radius"
           value={activeStyles.borderRadius}
