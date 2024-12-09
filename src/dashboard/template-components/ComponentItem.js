@@ -1,6 +1,17 @@
 import React, { useState } from "react";
-import { Box, Menu, MenuItem } from "@mui/material";
+import {
+  Box,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Button,
+} from "@mui/material";
 import { handleStyle } from "../../utils/handStyles.js";
+import { uploadImages } from "../../service/templateService.js";
 
 const ComponentItem = ({
   component,
@@ -15,6 +26,8 @@ const ComponentItem = ({
   const [dragging, setDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [imageSrc, setImageSrc] = useState(component.src || ""); // Trường src để chứa đường dẫn ảnh
+  const [openTextEdit, setOpenTextEdit] = useState(false);
+  const [newText, setNewText] = useState(component.text || "");
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -28,6 +41,20 @@ const ComponentItem = ({
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+
+  const handleTextEditOpen = () => {
+    setOpenTextEdit(true);
+    handleCloseMenu();
+  };
+
+  const handleTextEditClose = () => {
+    setOpenTextEdit(false);
+  };
+
+  const handleSaveTextEdit = () => {
+    component.text = newText; // Cập nhật lại văn bản trong component
+    setOpenTextEdit(false);
   };
 
   const resizeComponent = (
@@ -153,22 +180,37 @@ const ComponentItem = ({
   };
 
   // Hàm thay đổi ảnh cho component image
-  const handleImageUpload = (e) => {
+  // const handleImageUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setImageSrc(reader.result); // Cập nhật đường dẫn ảnh
+  //       component.src = reader.result; // Lưu vào component
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageSrc(reader.result); // Cập nhật đường dẫn ảnh
-        component.src = reader.result; // Lưu vào component
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Gọi API upload ảnh lên server
+        const uploadedImage = await uploadImages(file); // Gọi API upload ảnh
+        console.log("uploadedImage", uploadedImage);
+        // Cập nhật src sau khi ảnh được tải lên thành công
+        setImageSrc(uploadedImage.data.url); // Giả sử API trả về đường dẫn ảnh trong `url`
+        component.src = uploadedImage.data.url; // Lưu vào component
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
     }
   };
-
   return (
     <Box
       sx={{
         position: "absolute",
+        text: component.text,
         top: component.style.top,
         left: component.style.left,
         width: component.style.width,
@@ -180,6 +222,7 @@ const ComponentItem = ({
           component.type === "line" ? "#000" : component.style.fillColor,
         display: "flex",
         lineColor: component.style.lineColor,
+        color: component.style.color,
         LineWidth: component.style.LineWidth,
         opacity: component.style.opacity / 100,
         borderWidth: component.style.borderWidth,
@@ -189,10 +232,14 @@ const ComponentItem = ({
         justifyContent: "center",
         cursor: "move",
         padding: 1,
-        transition: "border 0.3s ease",
+        transition: component.type === "diamond" ? "" : "border 0.3s ease",
         borderRadius:
           component.type === "circle" ? "50%" : component.style.borderRadius,
-        src: component.type === "image" ? imageSrc : "",
+        src: imageSrc,
+        transform:
+          component.type === "diamond"
+            ? "rotate(45deg)"
+            : component.style.transform,
       }}
       onDoubleClick={handleClick}
       onMouseDown={handleDragStart}
@@ -205,12 +252,19 @@ const ComponentItem = ({
         handleOpenMenu(e);
       }}
     >
-      {component.type === "text" && <span>Text</span>}
-      {component.type === "image" && (
+      {component.type === "text" && <span>{component.text || "Text"}</span>}
+      {(component.type === "image" || component.type === "circle") && (
         <img
           src={imageSrc}
-          alt="Component"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          style={{
+            width: component.style.width,
+            height: component.style.height,
+            objectFit: "cover",
+            borderRadius:
+              component.type === "circle"
+                ? "50%"
+                : component.style.borderRadius,
+          }}
         />
       )}
       {isHovered ||
@@ -242,35 +296,60 @@ const ComponentItem = ({
               onMouseDown={(e) => handleResize(e, "bottom")}
             />
             <Box
-              sx={handleStyle("center", "left")}
+              sx={handleStyle("left", "center")}
               onMouseDown={(e) => handleResize(e, "left")}
             />
             <Box
-              sx={handleStyle("center", "right")}
+              sx={handleStyle("right", "center")}
               onMouseDown={(e) => handleResize(e, "right")}
             />
           </>
         ))}
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}
+        PaperProps={{
+          style: {
+            maxHeight: 200,
+            width: "15ch",
+          },
+        }}
       >
-        <MenuItem onClick={() => handleDelete(component.id)}>Delete</MenuItem>
-        {component.type === "image" && (
-          <MenuItem>
-            <input
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={handleImageUpload}
-              id={`upload-image-${component.id}`}
-            />
-            <label htmlFor={`upload-image-${component.id}`}>Chèn ảnh</label>
-          </MenuItem>
-        )}
+        <MenuItem onClick={handleTextEditOpen}>Edit Text</MenuItem>
+        {/* {component.type === "image" && (
+          
+        )} */}
+        <MenuItem>
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleImageUpload}
+            id={`upload-image-${component.id}`}
+          />
+          <label htmlFor={`upload-image-${component.id}`}>Chèn ảnh</label>
+        </MenuItem>
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
+
+      <Dialog open={openTextEdit} onClose={handleTextEditClose}>
+        <DialogTitle>Edit Text</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            multiline
+            variant="outlined"
+            value={newText}
+            onChange={(e) => setNewText(e.target.value)}
+            rows={4}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleTextEditClose}>Cancel</Button>
+          <Button onClick={handleSaveTextEdit}>Save</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

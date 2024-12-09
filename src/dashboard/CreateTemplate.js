@@ -28,6 +28,7 @@ const CreateTemplate = () => {
     name: "",
     description: "",
     accessType: "",
+    thumbnailUrl: "",
     metaData: {},
   });
   const [snackbar, setSnackbar] = useState({
@@ -45,7 +46,10 @@ const CreateTemplate = () => {
   const handleSaveSections = async () => {
     try {
       // Bước 1: Tạo template và lấy templateId
-      const savedTemplate = await createTemplate(templateData);
+      const savedTemplate = await createTemplate(
+        templateData,
+        templateData.thumbnailUrl
+      );
       console.log("Template:", savedTemplate);
       const templateID = savedTemplate.data?.id;
 
@@ -76,7 +80,6 @@ const CreateTemplate = () => {
       showSnackbar(error.message || "Lưu thất bại!", "error");
     }
   };
-
 
   const handleStyleChange = (key, value) => {
     if (!activeItem) return;

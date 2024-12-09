@@ -7,11 +7,30 @@ export const AdminAPI = axios.create({
     "Content-Type": "application/json",
   },
 });
+export const API = axios.create({
+  baseURL: `${process.env.REACT_APP_API_URL}`,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 // Hàm để lấy access token từ cookie hoặc sessionStorage
 const getAccessToken = () => {
   // Bạn có thể lấy token từ cookie hoặc sessionStorage
   return sessionStorage.getItem("access_token");
 };
+
+API.interceptors.request.use(
+  (config) => {
+    const token = getAccessToken();
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Interceptor để tự động thêm token vào các yêu cầu
 AdminAPI.interceptors.request.use(
@@ -110,6 +129,22 @@ export const createSection = async (sectionData) => {
   }
 };
 
+export const uploadImages = async (image) => {
+  try {
+    const formData = new FormData();
+    formData.append("image", image);
+    const response = await API.post("/images/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating image:", error);
+    throw error.response?.data || { message: "Failed to create image" };
+  }
+};
+
 export default {
   getAllTemplates,
   getTemplateById,
@@ -117,4 +152,5 @@ export default {
   updateTemplate,
   deleteTemplateById,
   createSection,
+  uploadImages,
 };
