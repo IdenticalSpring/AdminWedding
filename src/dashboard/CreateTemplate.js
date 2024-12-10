@@ -41,7 +41,28 @@ const CreateTemplate = () => {
 
   const handleDropdownChange = (value) => {
     setSelectedItem(value); // Cập nhật giá trị khi dropdown thay đổi
-    console.log("value" + value);
+    console.log("Selected item:", value);
+
+    if (activeItem) {
+      // Cập nhật ID của component hiện tại khi chọn một item
+      setSections((prevSections) =>
+        prevSections.map((section) =>
+          section.id === activeItem.sectionId
+            ? {
+                ...section,
+                components: section.components.map((component) =>
+                  component.id === activeItem.componentId
+                    ? {
+                        ...component,
+                        id: `${component.id}_${value}`, // Thêm selectedItem vào ID của component
+                      }
+                    : component
+                ),
+              }
+            : section
+        )
+      );
+    }
   };
   console.log("selectedItem" + selectedItem);
   const isPanning = useRef(false);
@@ -69,12 +90,12 @@ const CreateTemplate = () => {
         // Đảm bảo truyền đúng templateId vào mỗi section
         templateId: templateID,
         metadata: {
-          // components: section.components, // Đóng gói các components vào metadata
-          components: section.components.map((component) => ({
-            ...component,
-            // Thêm selectedItem vào ID của component
-            id: `${component.id}_${selectedItem}`, // Gắn selectedItem vào ID của component
-          })),
+          components: section.components, // Đóng gói các components vào metadata
+          // components: section.components.map((component) => ({
+          //   ...component,
+          //   // Thêm selectedItem vào ID của component
+          //   id: `${component.id}_${selectedItem}`, // Gắn selectedItem vào ID của component
+          // })),
         },
       }));
 
