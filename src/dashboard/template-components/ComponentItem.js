@@ -197,7 +197,6 @@ const ComponentItem = ({
       try {
         // Gọi API upload ảnh lên server
         const uploadedImage = await uploadImages(file); // Gọi API upload ảnh
-        console.log("uploadedImage", uploadedImage);
         // Cập nhật src sau khi ảnh được tải lên thành công
         setImageSrc(uploadedImage.data.url); // Giả sử API trả về đường dẫn ảnh trong `url`
         component.src = uploadedImage.data.url; // Lưu vào component
@@ -216,6 +215,7 @@ const ComponentItem = ({
         width: component.style.width,
         height: component.type === "line" ? "5" : component.style.height,
         fontSize: component.style.fontSize,
+        fontFamily: component.style.fontFamily,
         color: component.style.fillColor,
         border: isHovered || active ? "1px solid #f50057" : "1px solid #ddd",
         backgroundColor:

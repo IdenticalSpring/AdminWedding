@@ -37,7 +37,6 @@ const DropdownMenu = ({ selectedItem, onChange }) => {
   const handleChange = (e) => {
     const value = e.target.value;
     onChange(value); // Trigger the parent
-    console.log(value);
   };
   return (
     <Box sx={{ width: "100%" }}>

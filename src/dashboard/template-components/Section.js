@@ -14,8 +14,6 @@ const Section = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  console.log("selectedItem: " + selectedItem);
-
   const [, dropRef] = useDrop(() => ({
     accept: "component",
     drop: (item, monitor) => {
