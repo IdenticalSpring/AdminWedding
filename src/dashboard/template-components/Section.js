@@ -10,8 +10,11 @@ const Section = ({
   setActiveItem,
   activeItem,
   setActiveStyles,
+  selectedItem,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+
+  console.log("selectedItem: " + selectedItem);
 
   const [, dropRef] = useDrop(() => ({
     accept: "component",
@@ -96,6 +99,7 @@ const Section = ({
       {section.components.map((component) => (
         <ComponentItem
           key={component.id}
+          selected={selectedItem?.componentId === component.id}
           component={component}
           onDrag={(newPosition) =>
             handleDragComponent(component.id, newPosition)

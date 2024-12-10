@@ -71,7 +71,7 @@ const ViewTemplate = () => {
             }}
           >
             <img
-              src={component.src.startsWith("data:image") ? component.src : ""}
+              src={component.src}
               alt="image component"
               style={{
                 width: component.style.width,

@@ -8,7 +8,9 @@ const Canvas = ({
   setActiveItem,
   setActiveStyles,
   activeItem,
+  selectedItem,
 }) => {
+  console.log("selectedItem: " + selectedItem);
   return (
     <Box
       sx={{
@@ -27,6 +29,7 @@ const Canvas = ({
           setActiveItem={setActiveItem}
           activeItem={activeItem}
           setActiveStyles={setActiveStyles}
+          selectedItem={selectedItem}
         />
       ))}
     </Box>

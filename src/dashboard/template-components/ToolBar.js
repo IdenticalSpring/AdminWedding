@@ -15,9 +15,10 @@ const Toolbar = ({
   handleStyleChange,
   templateData,
   setTemplateData,
+  selectedItem,
+  onDropdownChange,
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
-
   useEffect(() => {
     if (activeStyles) {
       setTabIndex(1);
@@ -26,6 +27,7 @@ const Toolbar = ({
     }
   }, [activeStyles]);
 
+  console.log("selected:", selectedItem);
   const handleTabChange = (event, newValue) => {
     if (newValue === 1 && !activeStyles) return;
     setTabIndex(newValue);
@@ -90,6 +92,8 @@ const Toolbar = ({
             <StyleEditor
               activeStyles={activeStyles}
               handleStyleChange={handleStyleChange}
+              selectedItem={selectedItem}
+              onChange={onDropdownChange}
             />
           </Box>
         )}
