@@ -37,6 +37,13 @@ const CreateTemplate = () => {
     severity: "",
   });
 
+  const [selectedItem, setSelectedItem] = useState(""); // State để lưu giá trị của dropdown
+
+  const handleDropdownChange = (value) => {
+    setSelectedItem(value); // Cập nhật giá trị khi dropdown thay đổi
+    console.log("value" + value);
+  };
+  console.log("selectedItem" + selectedItem);
   const isPanning = useRef(false);
   const startPoint = useRef({ x: 0, y: 0 });
 
@@ -62,7 +69,12 @@ const CreateTemplate = () => {
         // Đảm bảo truyền đúng templateId vào mỗi section
         templateId: templateID,
         metadata: {
-          components: section.components, // Đóng gói các components vào metadata
+          // components: section.components, // Đóng gói các components vào metadata
+          components: section.components.map((component) => ({
+            ...component,
+            // Thêm selectedItem vào ID của component
+            id: `${component.id}_${selectedItem}`, // Gắn selectedItem vào ID của component
+          })),
         },
       }));
 
@@ -182,6 +194,8 @@ const CreateTemplate = () => {
             handleStyleChange={handleStyleChange}
             templateData={templateData}
             setTemplateData={setTemplateData}
+            selectedItem={selectedItem}
+            onDropdownChange={handleDropdownChange}
           />
           <Box
             id="canvas"
@@ -221,6 +235,7 @@ const CreateTemplate = () => {
                   setActiveItem={handleComponentClick}
                   activeItem={activeItem}
                   setActiveStyles={setActiveStyles}
+                  selectedItem={selectedItem}
                 />
               </Box>
             </Box>

@@ -9,6 +9,7 @@ import {
   InputAdornment,
   MenuItem,
 } from "@mui/material";
+import DropdownMenu from "./DropdownId";
 
 const StyleInput = ({
   label,
@@ -21,7 +22,7 @@ const StyleInput = ({
   options,
   step = 1,
 }) => (
-  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+  <Box sx={{ display: "flex", alignItems: "center", mt: 3 }}>
     <Box sx={{ width: "100%" }}>
       {type === "select" ? (
         <TextField
@@ -37,7 +38,10 @@ const StyleInput = ({
             </MenuItem>
           ))}
         </TextField>
-      ) : type === "number" ? (
+      ) : // : type === "dropdown" ? (
+      //   <DropdownMenu selectedItem={value} onChange={onChange} />
+      // )
+      type === "number" ? (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <TextField
             value={value || ""}
@@ -73,8 +77,14 @@ const StyleInput = ({
   </Box>
 );
 
-const StyleEditor = ({ activeStyles, handleStyleChange }) => {
+const StyleEditor = ({
+  activeStyles,
+  handleStyleChange,
+  selectedItem,
+  onChange,
+}) => {
   if (!activeStyles || Object.keys(activeStyles).length === 0) return null;
+  console.log("selected item", selectedItem);
 
   return (
     <Box
@@ -114,6 +124,16 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
           label="Gradient"
           sx={{ mb: 1 }}
         />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          SelectID
+        </Typography>
+        <DropdownMenu selectedItem={selectedItem} onChange={onChange} />
+        {/* <StyleInput
+          label="Dropdown"
+          value={selectedItem}
+          onChange={(value) => onChange("selectedItem", value)}
+          type="dropdown"
+        /> */}
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Color
         </Typography>
