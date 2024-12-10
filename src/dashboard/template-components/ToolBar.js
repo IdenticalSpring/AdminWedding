@@ -27,7 +27,6 @@ const Toolbar = ({
     }
   }, [activeStyles]);
 
-  console.log("selected:", selectedItem);
   const handleTabChange = (event, newValue) => {
     if (newValue === 1 && !activeStyles) return;
     setTabIndex(newValue);

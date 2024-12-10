@@ -39,14 +39,15 @@ const ViewTemplate = () => {
               position: "absolute",
               left: component.style.left,
               top: component.style.top,
+              fontSize: component.style.fontSize,
+              fontFamily: component.style.fontFamily,
               width: component.style.width,
               height: component.style.height,
-              fontSize: component.style.fontSize,
               color: component.style.color,
               backgroundColor: component.style.fillColor,
             }}
           >
-            <Typography variant="body1">
+            <Typography variant={component.style.fontSize}>
               {component.text || "No text provided"}
             </Typography>
           </Box>

@@ -41,8 +41,6 @@ const CreateTemplate = () => {
 
   const handleDropdownChange = (value) => {
     setSelectedItem(value); // Cập nhật giá trị khi dropdown thay đổi
-    console.log("Selected item:", value);
-
     if (activeItem) {
       // Cập nhật ID của component hiện tại khi chọn một item
       setSections((prevSections) =>
@@ -54,7 +52,7 @@ const CreateTemplate = () => {
                   component.id === activeItem.componentId
                     ? {
                         ...component,
-                        id: `${component.id}_${value}`, // Thêm selectedItem vào ID của component
+                        id: `${component.id}-${value}`, // Thêm selectedItem vào ID của component
                       }
                     : component
                 ),
@@ -64,7 +62,6 @@ const CreateTemplate = () => {
       );
     }
   };
-  console.log("selectedItem" + selectedItem);
   const isPanning = useRef(false);
   const startPoint = useRef({ x: 0, y: 0 });
 

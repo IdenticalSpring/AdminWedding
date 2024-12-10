@@ -84,7 +84,6 @@ const StyleEditor = ({
   onChange,
 }) => {
   if (!activeStyles || Object.keys(activeStyles).length === 0) return null;
-  console.log("selected item", selectedItem);
 
   return (
     <Box
@@ -134,6 +133,35 @@ const StyleEditor = ({
           onChange={(value) => onChange("selectedItem", value)}
           type="dropdown"
         /> */}
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Font Size
+        </Typography>
+        <StyleInput
+          label="Font Size"
+          value={activeStyles.fontSize}
+          onChange={(value) => handleStyleChange("fontSize", value)}
+          type="number"
+          unit="px"
+          min={0}
+          max={100}
+        />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Font Family
+        </Typography>
+        <StyleInput
+          label="Font Family"
+          value={activeStyles.fontFamily}
+          onChange={(value) => handleStyleChange("fontFamily", value)}
+          type="select"
+          options={[
+            "Arial",
+            "Courier New",
+            "Georgia",
+            "Times New Roman",
+            "Verdana",
+          ]}
+        />
+
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Color
         </Typography>

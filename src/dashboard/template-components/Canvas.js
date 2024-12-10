@@ -10,7 +10,6 @@ const Canvas = ({
   activeItem,
   selectedItem,
 }) => {
-  console.log("selectedItem: " + selectedItem);
   return (
     <Box
       sx={{
