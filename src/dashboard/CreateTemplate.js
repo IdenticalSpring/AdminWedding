@@ -87,7 +87,8 @@ const CreateTemplate = () => {
         // Đảm bảo truyền đúng templateId vào mỗi section
         templateId: templateID,
         metadata: {
-          components: section.components, // Đóng gói các components vào metadata
+          components: section.components,
+          style: section.style, // Đóng gói các components vào metadata
           // components: section.components.map((component) => ({
           //   ...component,
           //   // Thêm selectedItem vào ID của component
@@ -127,6 +128,7 @@ const CreateTemplate = () => {
                     }
                   : component
               ),
+              style: { ...section.style, [key]: value },
             }
           : section
       )
@@ -160,7 +162,21 @@ const CreateTemplate = () => {
   }, []);
 
   const addSection = () => {
-    const newSection = { id: Date.now().toString(), components: [] };
+    const newSection = {
+      id: Date.now().toString(),
+      components: [],
+      style: {
+        width: "100%",
+        minWidth: "800px",
+        height: "100%",
+        padding: 2,
+        position: "relative",
+        marginBottom: 2,
+        minHeight: "300px",
+        backgroundColor: "#f9f9f9",
+        transition: "border 0.3s ease",
+      },
+    };
     setSections((prevSections) => [...prevSections, newSection]);
     showSnackbar("New section added", "success");
   };

@@ -211,13 +211,13 @@ const ViewTemplate = () => {
               <Box
                 key={section.id}
                 sx={{
-                  position: "relative",
-                  border: "1px dashed #ccc",
-                  padding: 2,
-                  minHeight: "150px",
-                  marginBottom: 2,
-                  width: "766px",
-                  backgroundColor: "#f9f9f9",
+                  position: section.metadata?.style.position,
+                  border: section.metadata?.style.border,
+                  padding: section.metadata?.style.padding,
+                  minHeight: section.metadata?.style.minHeight,
+                  marginBottom: section.metadata?.style.marginBottom,
+                  width: section.metadata?.style.minWidth,
+                  backgroundColor: section.metadata?.style.backgroundColor,
                 }}
               >
                 <Typography variant="h6">
