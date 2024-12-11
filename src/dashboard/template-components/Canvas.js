@@ -14,7 +14,7 @@ const Canvas = ({
     <Box
       sx={{
         border: "1px solid #ddd",
-        padding: 2,
+        // padding: 2,
         minHeight: "80vh",
         backgroundColor: "#fff",
       }}

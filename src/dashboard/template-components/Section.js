@@ -83,13 +83,14 @@ const Section = ({
       onDoubleClick={handleDoubleClick}
       ref={dropRef}
       sx={{
-        position: "relative",
+        position: section.style.position,
         border: isHovered ? "2px solid #2196f3" : "1px dashed #ccc",
-        padding: 2,
-        marginBottom: 2,
-        minHeight: "150px",
-        backgroundColor: "#f9f9f9",
-        transition: "border 0.3s ease",
+        padding: section.style.padding,
+        marginBottom: section.style.marginBottom,
+        minWidth: section.style.minWidth,
+        minHeight: section.style.minHeight,
+        backgroundColor: section.style.backgroundColor,
+        transition: section.style.transition,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
