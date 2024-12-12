@@ -172,7 +172,7 @@ const CreateTemplate = () => {
         padding: 2,
         position: "relative",
         marginBottom: 2,
-        minHeight: "300px",
+        minHeight: "500px",
         backgroundColor: "#f9f9f9",
         transition: "border 0.3s ease",
       },
