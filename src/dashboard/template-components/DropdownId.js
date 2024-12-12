@@ -3,7 +3,7 @@ import { Box, MenuItem, Select, Typography } from "@mui/material";
 
 const DropdownMenu = ({ selectedItem, onChange }) => {
   const menuItems = [
-    { label: "Fixed", value: "fixed" },
+    { label: "FIXED", value: "fixed" },
     { label: "Header (section)", value: "header_section" },
     { label: "Tên cô dâu", value: "ten_co_dau" },
     { label: "Tên chú rể", value: "ten_chu_re" },
