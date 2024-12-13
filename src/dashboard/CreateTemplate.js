@@ -1,15 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import React, { useState, useRef, useCallback } from "react";
+import { Box, Button, Snackbar, Alert } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "./template-components/Canvas";
@@ -24,6 +14,8 @@ const CreateTemplate = () => {
   const [activeStyles, setActiveStyles] = useState({});
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [sectionCount, setSectionCount] = useState(1);
+
   const [templateData, setTemplateData] = useState({
     name: "",
     description: "",
@@ -89,11 +81,6 @@ const CreateTemplate = () => {
         metadata: {
           components: section.components,
           style: section.style, // Đóng gói các components vào metadata
-          // components: section.components.map((component) => ({
-          //   ...component,
-          //   // Thêm selectedItem vào ID của component
-          //   id: `${component.id}_${selectedItem}`, // Gắn selectedItem vào ID của component
-          // })),
         },
       }));
 
@@ -163,7 +150,8 @@ const CreateTemplate = () => {
 
   const addSection = () => {
     const newSection = {
-      id: Date.now().toString(),
+      id: `${sectionCount}-${Date.now()}`,
+      // id: Date.now().toString(),
       components: [],
       style: {
         width: "100%",
@@ -178,6 +166,7 @@ const CreateTemplate = () => {
       },
     };
     setSections((prevSections) => [...prevSections, newSection]);
+    setSectionCount((prevCount) => prevCount + 1); // Tăng giá trị sectionCount lên 1
     showSnackbar("New section added", "success");
   };
 
