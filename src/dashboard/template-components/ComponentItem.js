@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import Draggable from "react-draggable";
-import { Box, Menu, MenuItem, Button } from "@mui/material";
+import {
+  Box,
+  Menu,
+  MenuItem,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import { uploadImages } from "../../service/templateService.js";
 
 const ComponentItem = ({
@@ -13,7 +23,8 @@ const ComponentItem = ({
   const [isHovered, setIsHovered] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [imageSrc, setImageSrc] = useState(component.src || ""); // Đường dẫn ảnh
-  const [editingText, setEditingText] = useState(false);
+  const [openTextEdit, setOpenTextEdit] = useState(false);
+
   const [newText, setNewText] = useState(component.text || "");
 
   const handleOpenMenu = (event) => {
@@ -30,17 +41,18 @@ const ComponentItem = ({
     setAnchorEl(null);
   };
 
-  const handleTextEditToggle = () => {
-    setEditingText(!editingText);
+  const handleTextEditOpen = () => {
+    setOpenTextEdit(true);
+    handleCloseMenu();
   };
 
-  const handleTextChange = (e) => {
-    setNewText(e.target.value);
+  const handleTextEditClose = () => {
+    setOpenTextEdit(false);
   };
 
   const handleSaveTextEdit = () => {
-    component.text = newText; // Cập nhật lại văn bản trong component
-    setEditingText(false);
+    component.text = newText;
+    setOpenTextEdit(false);
   };
 
   const handleDragStop = (e, data) => {
@@ -113,29 +125,7 @@ const ComponentItem = ({
           handleOpenMenu(e);
         }}
       >
-        {component.type === "text" && (
-          <Box
-            contentEditable={editingText}
-            suppressContentEditableWarning
-            onBlur={handleSaveTextEdit}
-            onInput={handleTextChange}
-            sx={{
-              width: "100%",
-              height: "100%",
-              textAlign: "center",
-              border: editingText ? "1px dashed #f50057" : "none",
-              backgroundColor: editingText ? "#fff" : "transparent",
-              padding: "8px",
-              fontSize: component.style.fontSize,
-              fontFamily: component.style.fontFamily,
-              color: component.style.color,
-              cursor: editingText ? "text" : "pointer",
-              lineHeight: "1.4",
-            }}
-          >
-            {newText || "Click to edit text"}
-          </Box>
-        )}
+        {component.type === "text" && <span>{component.text || "Text"}</span>}
 
         {(component.type === "image" || component.type === "circle") && (
           <img
@@ -163,9 +153,7 @@ const ComponentItem = ({
             },
           }}
         >
-          <MenuItem onClick={handleTextEditToggle}>
-            {editingText ? "Save Text" : "Edit Text"}
-          </MenuItem>
+          <MenuItem onClick={handleTextEditOpen}>Edit Text</MenuItem>
           <MenuItem>
             <input
               type="file"
@@ -178,6 +166,24 @@ const ComponentItem = ({
           </MenuItem>
           <MenuItem onClick={handleDelete}>Delete</MenuItem>
         </Menu>
+
+        <Dialog open={openTextEdit} onClose={handleTextEditClose}>
+          <DialogTitle>Edit Text</DialogTitle>
+          <DialogContent>
+            <TextField
+              fullWidth
+              multiline
+              variant="outlined"
+              value={newText}
+              onChange={(e) => setNewText(e.target.value)}
+              rows={4}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleTextEditClose}>Cancel</Button>
+            <Button onClick={handleSaveTextEdit}>Save</Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Draggable>
   );
