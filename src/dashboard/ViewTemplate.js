@@ -220,9 +220,9 @@ const ViewTemplate = () => {
                   backgroundColor: section.metadata?.style.backgroundColor,
                 }}
               >
-                <Typography variant="h6">
+                {/* <Typography variant="h6">
                   Section: {section.name || "Unnamed"}
-                </Typography>
+                </Typography> */}
                 {/* Render the components inside the section */}
                 {section.metadata?.components?.map(renderComponent)}
               </Box>
