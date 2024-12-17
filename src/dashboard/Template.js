@@ -4,12 +4,17 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Header from "./components/Header";
 import {
   getAllTemplates,
   deleteTemplateById,
+  duplicateTemplate,
+  getSectionsByTemplateId,
+  createSectionDuplicate,
 } from "../service/templateService";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { v4 as uuidv4 } from "uuid";
 
 const TemplateManagement = () => {
   const [templates, setTemplates] = useState([]);
@@ -47,6 +52,86 @@ const TemplateManagement = () => {
   const handleAddTemplate = () => {
     navigate("/create-template");
   };
+  // const handleDuplicate = async (id) => {
+  //   try {
+  //     // Lấy dữ liệu template gốc
+  //     const originalTemplate = templates.find((template) => template.id === id);
+
+  //     if (!originalTemplate) {
+  //       console.error("Template not found!");
+  //       return;
+  //     }
+
+  //     // Gửi yêu cầu sao chép template lên server
+  //     const duplicatedTemplate = {
+  //       ...originalTemplate,
+  //       id: null,
+  //       name: `${originalTemplate.name} (Copy)`,
+  //     }; // Tạo bản sao với ID null và tên mới
+  //     // Gọi API để tạo bản sao
+  //     const response = await duplicateTemplate(
+  //       duplicatedTemplate,
+  //       duplicatedTemplate.thumbnailUrl
+  //     ); // Giả sử có API createTemplate
+  //     setTemplates([...templates, response.data]); // Cập nhật danh sách templates
+
+  //     console.log("Template duplicated successfully!");
+  //   } catch (error) {
+  //     console.error("Error duplicating template:", error);
+  //   }
+  // };
+  const handleDuplicate = async (id) => {
+    try {
+      // Lấy dữ liệu template gốc
+      const originalTemplate = templates.find((template) => template.id === id);
+
+      if (!originalTemplate) {
+        console.error("Template not found!");
+        return;
+      }
+
+      // Gửi yêu cầu sao chép template lên server
+      const duplicatedTemplate = {
+        ...originalTemplate,
+        id: null, // Đảm bảo ID null để server tạo ID mới
+        name: `${originalTemplate.name} (Copy)`, // Thêm "Copy" vào tên
+      };
+
+      // Gọi API để duplicate template
+      const response = await duplicateTemplate(
+        duplicatedTemplate,
+        duplicatedTemplate.thumbnailUrl
+      );
+      const newTemplate = response.data; // Template mới đã được tạo
+
+      // Lấy danh sách các sections của template gốc
+      const sectionsResponse = await getSectionsByTemplateId(
+        originalTemplate.id
+      );
+      const sections = sectionsResponse.data;
+
+      if (sections.length > 0) {
+        // Duplicate từng section với templateId mới
+        const duplicateSectionsPromises = sections.map((section) =>
+          createSectionDuplicate({
+            ...section,
+            id: uuidv4(), // Để server tự sinh ID
+            templateId: newTemplate.id, // Liên kết với template mới
+          })
+        );
+
+        // Chờ tất cả các sections được duplicate
+        await Promise.all(duplicateSectionsPromises);
+      }
+
+      // Cập nhật danh sách templates trong UI
+      setTemplates((prevTemplates) => [...prevTemplates, newTemplate]);
+
+      console.log("Template and sections duplicated successfully!");
+    } catch (error) {
+      console.error("Error duplicating template and sections:", error);
+    }
+  };
 
   const columns = [
     { field: "name", headerName: "Name", flex: 1 },
@@ -62,6 +147,11 @@ const TemplateManagement = () => {
           icon={<RemoveRedEyeIcon />}
           label="View"
           onClick={() => handleView(params.id)}
+        />,
+        <GridActionsCellItem
+          icon={<ContentCopyIcon />}
+          label="Duplicate"
+          onClick={() => handleDuplicate(params.id)}
         />,
         <GridActionsCellItem
           icon={<DeleteIcon />}

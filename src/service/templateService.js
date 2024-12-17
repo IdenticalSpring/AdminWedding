@@ -89,6 +89,27 @@ export const createTemplate = async (templateData, thumbnail) => {
   }
 };
 
+export const duplicateTemplate = async (templateData, thumbnail) => {
+  try {
+    const formData = new FormData();
+    formData.append("name", templateData.name);
+    formData.append("description", templateData.description);
+    formData.append("accessType", templateData.accessType);
+    formData.append("metaData", templateData.metaData);
+    if (thumbnail) formData.append("thumbnailUrl", thumbnail);
+
+    const response = await AdminAPI.post("/templates", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating template:", error);
+    throw error.response?.data || { message: "Failed to create template" };
+  }
+};
+
 export const updateTemplate = async (id, templateData, thumbnail) => {
   try {
     const formData = new FormData();
@@ -129,6 +150,30 @@ export const createSection = async (sectionData) => {
   }
 };
 
+export const createSectionDuplicate = async (sectionData) => {
+  try {
+    // Loại bỏ id nếu có
+    const { id, ...sectionDataWithoutId } = sectionData;
+
+    // Gửi yêu cầu tạo Section không có id
+    const response = await AdminAPI.post("/sections", sectionDataWithoutId);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating section:", error);
+    throw error.response?.data || { message: "Failed to create section" };
+  }
+};
+
+export const getSectionsByTemplateId = async (templateId) => {
+  try {
+    const response = await AdminAPI.get(`/sections/template/${templateId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching sections:", error);
+    throw error;
+  }
+};
+
 export const uploadImages = async (image) => {
   try {
     const formData = new FormData();
@@ -152,5 +197,6 @@ export default {
   updateTemplate,
   deleteTemplateById,
   createSection,
+  getSectionsByTemplateId,
   uploadImages,
 };
