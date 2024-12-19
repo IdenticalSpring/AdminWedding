@@ -9,10 +9,12 @@ const Section = ({
   setSections,
   setActiveItem,
   activeItem,
+  sections,
   setActiveStyles,
   selectedItem,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [guides, setGuides] = useState({ vertical: null, horizontal: null });
 
   const [, dropRef] = useDrop(() => ({
     accept: "component",
@@ -57,6 +59,19 @@ const Section = ({
       }
       return newSections;
     });
+    const currentSection = sections.find((sec) => sec.id === section.id);
+    if (currentSection) {
+      const component = currentSection.components.find(
+        (comp) => comp.id === compId
+      );
+      if (component) {
+        const { left, top, width, height } = component.style;
+        setGuides({
+          vertical: left + width / 2,
+          horizontal: top + height / 2,
+        });
+      }
+    }
   };
 
   const handleDeleteComponent = (compId) => {
@@ -67,6 +82,7 @@ const Section = ({
       );
       return newSections;
     });
+    setGuides({ vertical: null, horizontal: null }); // Đặt lại guides khi xóa component
   };
 
   const handleDoubleClick = () => {
@@ -75,6 +91,8 @@ const Section = ({
       setActiveStyles({ backgroundColor: section.backgroundColor || "#fff" });
     } else {
       console.error("setActiveStyles is not available");
+      setActiveItem(null);
+      setGuides({ vertical: null, horizontal: null }); // Đặt lại guides khi không chọn component
     }
   };
 
@@ -95,6 +113,32 @@ const Section = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {guides.vertical !== null && (
+        <Box
+          sx={{
+            position: "absolute",
+            left: guides.vertical,
+            top: 0,
+            bottom: 0,
+            width: "1px",
+            backgroundColor: "black",
+            transition: "left 0.2s ease", // Thêm transition cho guides
+          }}
+        />
+      )}
+      {guides.horizontal !== null && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: guides.horizontal,
+            left: 0,
+            right: 0,
+            height: "1px",
+            backgroundColor: "black",
+            transition: "top 0.2s ease", // Thêm transition cho guides
+          }}
+        />
+      )}
       {section.components.map((component) => (
         <ComponentItem
           key={component.id}

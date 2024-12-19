@@ -25,6 +25,7 @@ const Canvas = ({
           section={section}
           index={index}
           setSections={setSections}
+          sections={sections} // Thêm dòng này
           setActiveItem={setActiveItem}
           activeItem={activeItem}
           setActiveStyles={setActiveStyles}
