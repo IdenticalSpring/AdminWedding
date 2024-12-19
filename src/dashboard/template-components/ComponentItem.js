@@ -19,6 +19,7 @@ const ComponentItem = ({
   setActiveItem,
   setActiveStyles,
   active,
+  onDrag,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -61,6 +62,7 @@ const ComponentItem = ({
       left: data.x,
       top: data.y,
     };
+    onDrag({ left: data.x, top: data.y });
   };
 
   const handleImageUpload = async (e) => {
