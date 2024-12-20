@@ -73,7 +73,7 @@ export const createTemplate = async (templateData, thumbnail) => {
     const formData = new FormData();
     formData.append("name", templateData.name);
     formData.append("description", templateData.description);
-    formData.append("accessType", templateData.accessType);
+    formData.append("subscriptionPlanId", templateData.subscriptionPlanId);
     formData.append("metaData", templateData.metaData);
     if (thumbnail) formData.append("thumbnail", thumbnail);
 
@@ -94,7 +94,7 @@ export const duplicateTemplate = async (templateData, thumbnail) => {
     const formData = new FormData();
     formData.append("name", templateData.name);
     formData.append("description", templateData.description);
-    formData.append("accessType", templateData.accessType);
+    formData.append("subscriptionPlanId", templateData.subscriptionPlanId);
     formData.append("metaData", templateData.metaData);
     if (thumbnail) formData.append("thumbnailUrl", thumbnail);
 
@@ -115,7 +115,7 @@ export const updateTemplate = async (id, templateData, thumbnail) => {
     const formData = new FormData();
     formData.append("name", templateData.name);
     formData.append("description", templateData.description);
-    formData.append("accessType", templateData.accessType);
+    formData.append("subscriptionPlanId", templateData.subscriptionPlanId);
     if (thumbnail) formData.append("thumbnail", thumbnail);
 
     const response = await AdminAPI.patch(`/templates/${id}`, formData, {
@@ -187,6 +187,16 @@ export const uploadImages = async (image) => {
   } catch (error) {
     console.error("Error creating image:", error);
     throw error.response?.data || { message: "Failed to create image" };
+  }
+};
+
+export const getAllSubscription = async () => {
+  try {
+    const response = await AdminAPI.get(`/subscription-plans`);
+    return response.data?.data;
+  } catch (error) {
+    console.error("Error fetching subcription:", error);
+    throw error.response?.data || { message: "Failed to fetch subcription" };
   }
 };
 

@@ -35,7 +35,7 @@ const TemplateManagement = () => {
 
     fetchTemplates();
   }, []);
-
+  console.log("templates", templates);
   const handleDelete = async (id) => {
     try {
       await deleteTemplateById(id);
@@ -52,34 +52,7 @@ const TemplateManagement = () => {
   const handleAddTemplate = () => {
     navigate("/create-template");
   };
-  // const handleDuplicate = async (id) => {
-  //   try {
-  //     // Lấy dữ liệu template gốc
-  //     const originalTemplate = templates.find((template) => template.id === id);
 
-  //     if (!originalTemplate) {
-  //       console.error("Template not found!");
-  //       return;
-  //     }
-
-  //     // Gửi yêu cầu sao chép template lên server
-  //     const duplicatedTemplate = {
-  //       ...originalTemplate,
-  //       id: null,
-  //       name: `${originalTemplate.name} (Copy)`,
-  //     }; // Tạo bản sao với ID null và tên mới
-  //     // Gọi API để tạo bản sao
-  //     const response = await duplicateTemplate(
-  //       duplicatedTemplate,
-  //       duplicatedTemplate.thumbnailUrl
-  //     ); // Giả sử có API createTemplate
-  //     setTemplates([...templates, response.data]); // Cập nhật danh sách templates
-
-  //     console.log("Template duplicated successfully!");
-  //   } catch (error) {
-  //     console.error("Error duplicating template:", error);
-  //   }
-  // };
   const handleDuplicate = async (id) => {
     try {
       // Lấy dữ liệu template gốc
@@ -132,11 +105,14 @@ const TemplateManagement = () => {
       console.error("Error duplicating template and sections:", error);
     }
   };
-
   const columns = [
     { field: "name", headerName: "Name", flex: 1 },
     { field: "description", headerName: "Description", flex: 2 },
-    { field: "accessType", headerName: "Access Type", flex: 2 },
+    {
+      field: "subscriptionPlan",
+      headerName: "Subscription Plan",
+      flex: 2,
+    },
     {
       field: "actions",
       headerName: "Actions",
