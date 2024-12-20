@@ -25,7 +25,25 @@ const TemplateManagement = () => {
     const fetchTemplates = async () => {
       try {
         const response = await getAllTemplates(1);
-        setTemplates(response.data);
+
+        // Log the raw response data
+        console.log("Raw Response Data:", response.data);
+
+        // Process the data to ensure subscriptionPlan exists
+        const processedData = response.data.map((template) => ({
+          ...template,
+          subscriptionPlan: template.subscriptionPlan || {
+            name: "No Plan",
+            description: "",
+            price: "0.00",
+            duration: 0,
+          },
+        }));
+
+        // Log the processed data
+        console.log("Processed Templates:", processedData);
+
+        setTemplates(processedData);
       } catch (error) {
         console.error("Error fetching templates:", error);
       } finally {
@@ -46,40 +64,13 @@ const TemplateManagement = () => {
   };
 
   const handleView = (id) => {
-    navigate(`/view-template/${id}`); // Truyền templateId vào đường dẫn
+    navigate(`/view-template/${id}`);
   };
 
   const handleAddTemplate = () => {
     navigate("/create-template");
   };
-  // const handleDuplicate = async (id) => {
-  //   try {
-  //     // Lấy dữ liệu template gốc
-  //     const originalTemplate = templates.find((template) => template.id === id);
 
-  //     if (!originalTemplate) {
-  //       console.error("Template not found!");
-  //       return;
-  //     }
-
-  //     // Gửi yêu cầu sao chép template lên server
-  //     const duplicatedTemplate = {
-  //       ...originalTemplate,
-  //       id: null,
-  //       name: `${originalTemplate.name} (Copy)`,
-  //     }; // Tạo bản sao với ID null và tên mới
-  //     // Gọi API để tạo bản sao
-  //     const response = await duplicateTemplate(
-  //       duplicatedTemplate,
-  //       duplicatedTemplate.thumbnailUrl
-  //     ); // Giả sử có API createTemplate
-  //     setTemplates([...templates, response.data]); // Cập nhật danh sách templates
-
-  //     console.log("Template duplicated successfully!");
-  //   } catch (error) {
-  //     console.error("Error duplicating template:", error);
-  //   }
-  // };
   const handleDuplicate = async (id) => {
     try {
       // Lấy dữ liệu template gốc
@@ -136,7 +127,22 @@ const TemplateManagement = () => {
   const columns = [
     { field: "name", headerName: "Name", flex: 1 },
     { field: "description", headerName: "Description", flex: 2 },
-    { field: "accessType", headerName: "Access Type", flex: 2 },
+    {
+      field: "subscriptionPlan",
+      headerName: "Subscription Plan",
+      flex: 2,
+      renderCell: (params) => {
+        const plan = params.row.subscriptionPlan;
+        if (!plan) return "No Plan";
+        return (
+          <Box>
+            <Typography variant="body1">
+              <strong>{plan.name}</strong>
+            </Typography>
+          </Box>
+        );
+      },
+    },
     {
       field: "actions",
       headerName: "Actions",
@@ -201,11 +207,12 @@ const TemplateManagement = () => {
         </Box>
         <Box sx={{ height: 500 }}>
           <DataGrid
-            rows={templates}
+            rows={templates || []}
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5, 10, 20]}
             disableSelectionOnClick
+            getRowId={(row) => row.id}
           />
         </Box>
       </Box>

@@ -9,6 +9,7 @@ import {
   Diamond,
   Line,
 } from "../../utils/draggableComponents";
+import { getAllSubscription } from "../../service/templateService"; // Import hàm getAllSubscription
 
 const Toolbar = ({
   activeStyles,
@@ -19,6 +20,7 @@ const Toolbar = ({
   onDropdownChange,
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
+  const [subscriptions, setSubscriptions] = useState([]);
   useEffect(() => {
     if (activeStyles) {
       setTabIndex(1);
@@ -26,6 +28,19 @@ const Toolbar = ({
       setTabIndex(0);
     }
   }, [activeStyles]);
+  useEffect(() => {
+    // Gọi API khi component được mount
+    const fetchSubscriptions = async () => {
+      try {
+        const data = await getAllSubscription();
+        setSubscriptions(data); // Lưu trữ kết quả API trong state
+      } catch (error) {
+        console.error("Error fetching subscriptions:", error);
+      }
+    };
+
+    fetchSubscriptions();
+  }, []);
 
   const handleTabChange = (event, newValue) => {
     if (newValue === 1 && !activeStyles) return;
@@ -115,16 +130,22 @@ const Toolbar = ({
               onChange={(e) => handleInputChange("description", e.target.value)}
               margin="normal"
             />
+            {/* Dropdown hiển thị kết quả API */}
             <TextField
               fullWidth
               select
-              label="Access Type"
-              value={templateData.accessType}
-              onChange={(e) => handleInputChange("accessType", e.target.value)}
+              label="Subscription Plan"
+              value={templateData.subscriptionPlanId || ""}
+              onChange={(e) =>
+                handleInputChange("subscriptionPlanId", e.target.value)
+              }
               margin="normal"
             >
-              <MenuItem value="FREE">FREE</MenuItem>
-              <MenuItem value="VIP">VIP</MenuItem>
+              {subscriptions.map((subscription) => (
+                <MenuItem key={subscription.id} value={subscription.id}>
+                  {subscription.name}
+                </MenuItem>
+              ))}
             </TextField>
 
             {/* Trường upload ảnh thumbnail */}

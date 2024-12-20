@@ -20,7 +20,7 @@ const CreateTemplate = () => {
   const [templateData, setTemplateData] = useState({
     name: "",
     description: "",
-    accessType: "",
+    subscriptionPlanId: "",
     thumbnailUrl: "",
     metaData: {},
   });
@@ -290,72 +290,6 @@ const CreateTemplate = () => {
             onDropdownChange={handleDropdownChange}
           />
         </Box>
-
-        {/* <Box
-          sx={{
-            display: "flex",
-            height: "100%",
-            overflow: "hidden",
-            flexDirection: "row-reverse",
-          }}
-        >
-          <LayerList
-            sections={sections}
-            onSelectLayer={handleSelectLayer}
-            onReorderSections={handleReorderSections}
-          />
-          <Toolbar
-            activeStyles={activeStyles}
-            handleStyleChange={handleStyleChange}
-            templateData={templateData}
-            setTemplateData={setTemplateData}
-            selectedItem={selectedItem}
-            onDropdownChange={handleDropdownChange}
-          />
-          <Box
-            id="canvas"
-            onWheel={handleWheel}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            sx={{
-              flex: 1,
-              backgroundColor: "#FCFCFC",
-              cursor: isPanning.current ? "grabbing" : "grab",
-              position: "relative",
-            }}
-          >
-            <Box
-              sx={{
-                transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`,
-                transformOrigin: "center",
-                transition: isPanning.current
-                  ? "none"
-                  : "transform 0.2s ease-out",
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-              }}
-            >
-              <Box
-                sx={{ width: "800px", height: "600px", position: "relative" }}
-              >
-                <Canvas
-                  sections={sections}
-                  setSections={setSections}
-                  setActiveItem={handleComponentClick}
-                  activeItem={activeItem}
-                  setActiveStyles={setActiveStyles}
-                  selectedItem={selectedItem}
-                />
-              </Box>
-            </Box>
-          </Box>
-        </Box> */}
         <Box
           sx={{
             position: "fixed",
