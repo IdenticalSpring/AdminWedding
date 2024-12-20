@@ -25,7 +25,20 @@ const TemplateManagement = () => {
     const fetchTemplates = async () => {
       try {
         const response = await getAllTemplates(1);
-        setTemplates(response.data);
+
+        // Log the raw response data
+        console.log("Raw Response Data:", response.data);
+
+        // Process the data to ensure subscriptionPlan exists
+        const processedData = response.data.map((template) => ({
+          ...template,
+          subscriptionPlan: template.subscriptionPlan || { name: "No Plan", description: "", price: "0.00", duration: 0 },
+        }));
+
+        // Log the processed data
+        console.log("Processed Templates:", processedData);
+
+        setTemplates(processedData);
       } catch (error) {
         console.error("Error fetching templates:", error);
       } finally {
@@ -35,7 +48,7 @@ const TemplateManagement = () => {
 
     fetchTemplates();
   }, []);
-  console.log("templates", templates);
+
   const handleDelete = async (id) => {
     try {
       await deleteTemplateById(id);
@@ -46,7 +59,7 @@ const TemplateManagement = () => {
   };
 
   const handleView = (id) => {
-    navigate(`/view-template/${id}`); // Truyền templateId vào đường dẫn
+    navigate(`/view-template/${id}`);
   };
 
   const handleAddTemplate = () => {
@@ -105,6 +118,7 @@ const TemplateManagement = () => {
       console.error("Error duplicating template and sections:", error);
     }
   };
+
   const columns = [
     { field: "name", headerName: "Name", flex: 1 },
     { field: "description", headerName: "Description", flex: 2 },
@@ -112,6 +126,15 @@ const TemplateManagement = () => {
       field: "subscriptionPlan",
       headerName: "Subscription Plan",
       flex: 2,
+      renderCell: (params) => {
+        const plan = params.row.subscriptionPlan;
+        if (!plan) return "No Plan";
+        return (
+          <Box>
+            <Typography variant="body1"><strong>{plan.name}</strong></Typography>
+          </Box>
+        );
+      },
     },
     {
       field: "actions",
@@ -177,11 +200,12 @@ const TemplateManagement = () => {
         </Box>
         <Box sx={{ height: 500 }}>
           <DataGrid
-            rows={templates}
+            rows={templates || []}
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5, 10, 20]}
             disableSelectionOnClick
+            getRowId={(row) => row.id} 
           />
         </Box>
       </Box>
