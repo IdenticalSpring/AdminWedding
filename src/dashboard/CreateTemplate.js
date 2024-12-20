@@ -56,6 +56,8 @@ const CreateTemplate = () => {
       // Bước 2: Cập nhật các section với templateId và metadata
       const sectionsWithMetadata = sections.map((section) => ({
         id: section.id,
+        name: section?.name,
+        details: section?.description,
         templateId: templateID,
         metadata: {
           components: section.components, // Đóng gói các components vào metadata
@@ -127,7 +129,7 @@ const CreateTemplate = () => {
   }, []);
 
   const addSection = () => {
-    const newSection = { id: Date.now().toString(), components: [] };
+    const newSection = { id: Date.now(), components: [] };
     setSections((prevSections) => [...prevSections, newSection]);
     showSnackbar("New section added", "success");
   };

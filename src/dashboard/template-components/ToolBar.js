@@ -200,7 +200,7 @@ const Toolbar = ({
               onChange={(e) => handleInputChange("accessType", e.target.value)}
               margin="normal"
             >
-              <MenuItem value="Free">Free</MenuItem>
+              <MenuItem value="FREE">Free</MenuItem>
               <MenuItem value="VIP">VIP</MenuItem>
             </TextField>
           </Box>
