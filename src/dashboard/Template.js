@@ -32,7 +32,12 @@ const TemplateManagement = () => {
         // Process the data to ensure subscriptionPlan exists
         const processedData = response.data.map((template) => ({
           ...template,
-          subscriptionPlan: template.subscriptionPlan || { name: "No Plan", description: "", price: "0.00", duration: 0 },
+          subscriptionPlan: template.subscriptionPlan || {
+            name: "No Plan",
+            description: "",
+            price: "0.00",
+            duration: 0,
+          },
         }));
 
         // Log the processed data
@@ -131,7 +136,9 @@ const TemplateManagement = () => {
         if (!plan) return "No Plan";
         return (
           <Box>
-            <Typography variant="body1"><strong>{plan.name}</strong></Typography>
+            <Typography variant="body1">
+              <strong>{plan.name}</strong>
+            </Typography>
           </Box>
         );
       },
@@ -205,7 +212,7 @@ const TemplateManagement = () => {
             pageSize={5}
             rowsPerPageOptions={[5, 10, 20]}
             disableSelectionOnClick
-            getRowId={(row) => row.id} 
+            getRowId={(row) => row.id}
           />
         </Box>
       </Box>

@@ -94,7 +94,7 @@ export const duplicateTemplate = async (templateData, thumbnail) => {
     const formData = new FormData();
     formData.append("name", templateData.name);
     formData.append("description", templateData.description);
-    formData.append("subscriptionPlanId", templateData.subscriptionPlanId);
+    formData.append("subscriptionPlanId", templateData.subscriptionPlan.id);
     formData.append("metaData", templateData.metaData);
     if (thumbnail) formData.append("thumbnailUrl", thumbnail);
 
