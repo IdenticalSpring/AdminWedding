@@ -39,13 +39,15 @@ const ViewTemplate = () => {
               position: "absolute",
               left: component.style.left,
               top: component.style.top,
+              fontSize: component.style.fontSize,
+              fontFamily: component.style.fontFamily,
               width: component.style.width,
               height: component.style.height,
-              fontSize: component.style.fontSize,
               color: component.style.color,
+              backgroundColor: component.style.fillColor,
             }}
           >
-            <Typography variant="body1">
+            <Typography variant={component.style.fontSize}>
               {component.text || "No text provided"}
             </Typography>
           </Box>
@@ -68,7 +70,21 @@ const ViewTemplate = () => {
               borderStyle: component.style.borderStyle || "none",
               opacity: component.style.opacity / 100 || "1",
             }}
-          />
+          >
+            <img
+              src={component.src}
+              alt="image component"
+              style={{
+                width: component.style.width,
+                height: component.style.height,
+                objectFit: "cover",
+                borderRadius:
+                  component.type === "circle"
+                    ? "50%"
+                    : component.style.borderRadius,
+              }}
+            />
+          </Box>
         );
       case "rect":
         return (
@@ -110,11 +126,11 @@ const ViewTemplate = () => {
             }}
           >
             <img
-              src={component.src.startsWith("data:image") ? component.src : ""}
+              src={component.src}
               alt="image component"
               style={{
-                width: "100%",
-                height: "100%",
+                width: component.style.width,
+                height: component.style.height,
                 objectFit: "cover", // Adjust image to fit box
               }}
             />
@@ -195,18 +211,18 @@ const ViewTemplate = () => {
               <Box
                 key={section.id}
                 sx={{
-                  position: "relative",
-                  border: "1px dashed #ccc",
-                  padding: 2,
-                  minHeight: "150px",
-                  marginBottom: 2,
-                  width: "766px",
-                  backgroundColor: "#f9f9f9",
+                  position: section.metadata?.style.position,
+                  border: section.metadata?.style.border,
+                  padding: section.metadata?.style.padding,
+                  minHeight: section.metadata?.style.minHeight,
+                  marginBottom: section.metadata?.style.marginBottom,
+                  width: section.metadata?.style.minWidth,
+                  backgroundColor: section.metadata?.style.backgroundColor,
                 }}
               >
-                <Typography variant="h6">
+                {/* <Typography variant="h6">
                   Section: {section.name || "Unnamed"}
-                </Typography>
+                </Typography> */}
                 {/* Render the components inside the section */}
                 {section.metadata?.components?.map(renderComponent)}
               </Box>

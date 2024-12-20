@@ -8,12 +8,13 @@ const Canvas = ({
   setActiveItem,
   setActiveStyles,
   activeItem,
+  selectedItem,
 }) => {
   return (
     <Box
       sx={{
         border: "1px solid #ddd",
-        padding: 2,
+        // padding: 2,
         minHeight: "80vh",
         backgroundColor: "#fff",
       }}
@@ -24,9 +25,11 @@ const Canvas = ({
           section={section}
           index={index}
           setSections={setSections}
+          sections={sections} // Thêm dòng này
           setActiveItem={setActiveItem}
           activeItem={activeItem}
           setActiveStyles={setActiveStyles}
+          selectedItem={selectedItem}
         />
       ))}
     </Box>

@@ -10,12 +10,14 @@ import CreateTemplate from "./dashboard/CreateTemplate";
 import TemplateManagement from "./dashboard/Template";
 import DashboardLayoutv2 from "./dashboard/Dashboardv2";
 import ViewTemplate from "./dashboard/ViewTemplate";
+import SubscriptionPlans from "./dashboard/SubscriptionPlans";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
         <Route
           path="/dashboard"
           element={
@@ -53,6 +55,16 @@ function App() {
             <DashboardLayoutv2>
               <PrivateRoute>
                 <ViewTemplate />
+              </PrivateRoute>
+            </DashboardLayoutv2>
+          }
+        />
+        <Route
+          path="/subscription_plans"
+          element={
+            <DashboardLayoutv2>
+              <PrivateRoute>
+                <SubscriptionPlans />
               </PrivateRoute>
             </DashboardLayoutv2>
           }

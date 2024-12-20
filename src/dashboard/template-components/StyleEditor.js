@@ -9,6 +9,7 @@ import {
   InputAdornment,
   MenuItem,
 } from "@mui/material";
+import DropdownMenu from "./DropdownId";
 
 const StyleInput = ({
   label,
@@ -21,7 +22,7 @@ const StyleInput = ({
   options,
   step = 1,
 }) => (
-  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+  <Box sx={{ display: "flex", alignItems: "center", mt: 3 }}>
     <Box sx={{ width: "100%" }}>
       {type === "select" ? (
         <TextField
@@ -37,7 +38,10 @@ const StyleInput = ({
             </MenuItem>
           ))}
         </TextField>
-      ) : type === "number" ? (
+      ) : // : type === "dropdown" ? (
+      //   <DropdownMenu selectedItem={value} onChange={onChange} />
+      // )
+      type === "number" ? (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <TextField
             value={value || ""}
@@ -73,7 +77,12 @@ const StyleInput = ({
   </Box>
 );
 
-const StyleEditor = ({ activeStyles, handleStyleChange }) => {
+const StyleEditor = ({
+  activeStyles,
+  handleStyleChange,
+  selectedItem,
+  onChange,
+}) => {
   if (!activeStyles || Object.keys(activeStyles).length === 0) return null;
 
   return (
@@ -113,6 +122,60 @@ const StyleEditor = ({ activeStyles, handleStyleChange }) => {
           }
           label="Gradient"
           sx={{ mb: 1 }}
+        />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          SelectID
+        </Typography>
+        <DropdownMenu selectedItem={selectedItem} onChange={onChange} />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Height Section
+        </Typography>
+        <StyleInput
+          label="Height"
+          value={activeStyles.height}
+          onChange={(value) => handleStyleChange("height", value)}
+          type="number"
+          unit="px"
+          min={0}
+          max={1000}
+        />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Font Size
+        </Typography>
+        <StyleInput
+          label="Font Size"
+          value={activeStyles.fontSize}
+          onChange={(value) => handleStyleChange("fontSize", value)}
+          type="number"
+          unit="px"
+          min={0}
+          max={100}
+        />
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Font Family
+        </Typography>
+        <StyleInput
+          label="Font Family"
+          value={activeStyles.fontFamily}
+          onChange={(value) => handleStyleChange("fontFamily", value)}
+          type="select"
+          options={[
+            "Arial",
+            "Courier New",
+            "Georgia",
+            "Times New Roman",
+            "Verdana",
+          ]}
+        />
+
+        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
+          Color
+        </Typography>
+        <StyleInput
+          label="Color"
+          value={activeStyles.color}
+          onChange={(value) => handleStyleChange("color", value)}
+          type="color"
         />
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Width

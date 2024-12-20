@@ -7,11 +7,30 @@ export const AdminAPI = axios.create({
     "Content-Type": "application/json",
   },
 });
+export const API = axios.create({
+  baseURL: `${process.env.REACT_APP_API_URL}`,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 // Hàm để lấy access token từ cookie hoặc sessionStorage
 const getAccessToken = () => {
   // Bạn có thể lấy token từ cookie hoặc sessionStorage
   return sessionStorage.getItem("access_token");
 };
+
+API.interceptors.request.use(
+  (config) => {
+    const token = getAccessToken();
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Interceptor để tự động thêm token vào các yêu cầu
 AdminAPI.interceptors.request.use(
@@ -54,9 +73,30 @@ export const createTemplate = async (templateData, thumbnail) => {
     const formData = new FormData();
     formData.append("name", templateData.name);
     formData.append("description", templateData.description);
-    formData.append("accessType", templateData.accessType);
+    formData.append("subscriptionPlanId", templateData.subscriptionPlanId);
     formData.append("metaData", templateData.metaData);
     if (thumbnail) formData.append("thumbnail", thumbnail);
+
+    const response = await AdminAPI.post("/templates", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating template:", error);
+    throw error.response?.data || { message: "Failed to create template" };
+  }
+};
+
+export const duplicateTemplate = async (templateData, thumbnail) => {
+  try {
+    const formData = new FormData();
+    formData.append("name", templateData.name);
+    formData.append("description", templateData.description);
+    formData.append("subscriptionPlanId", templateData.subscriptionPlan.id);
+    formData.append("metaData", templateData.metaData);
+    if (thumbnail) formData.append("thumbnailUrl", thumbnail);
 
     const response = await AdminAPI.post("/templates", formData, {
       headers: {
@@ -75,7 +115,7 @@ export const updateTemplate = async (id, templateData, thumbnail) => {
     const formData = new FormData();
     formData.append("name", templateData.name);
     formData.append("description", templateData.description);
-    formData.append("accessType", templateData.accessType);
+    formData.append("subscriptionPlanId", templateData.subscriptionPlanId);
     if (thumbnail) formData.append("thumbnail", thumbnail);
 
     const response = await AdminAPI.patch(`/templates/${id}`, formData, {
@@ -110,6 +150,56 @@ export const createSection = async (sectionData) => {
   }
 };
 
+export const createSectionDuplicate = async (sectionData) => {
+  try {
+    // Loại bỏ id nếu có
+    const { id, ...sectionDataWithoutId } = sectionData;
+
+    // Gửi yêu cầu tạo Section không có id
+    const response = await AdminAPI.post("/sections", sectionDataWithoutId);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating section:", error);
+    throw error.response?.data || { message: "Failed to create section" };
+  }
+};
+
+export const getSectionsByTemplateId = async (templateId) => {
+  try {
+    const response = await AdminAPI.get(`/sections/template/${templateId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching sections:", error);
+    throw error;
+  }
+};
+
+export const uploadImages = async (image) => {
+  try {
+    const formData = new FormData();
+    formData.append("image", image);
+    const response = await API.post("/images/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating image:", error);
+    throw error.response?.data || { message: "Failed to create image" };
+  }
+};
+
+export const getAllSubscription = async () => {
+  try {
+    const response = await AdminAPI.get(`/subscription-plans`);
+    return response.data?.data;
+  } catch (error) {
+    console.error("Error fetching subcription:", error);
+    throw error.response?.data || { message: "Failed to fetch subcription" };
+  }
+};
+
 export default {
   getAllTemplates,
   getTemplateById,
@@ -117,4 +207,6 @@ export default {
   updateTemplate,
   deleteTemplateById,
   createSection,
+  getSectionsByTemplateId,
+  uploadImages,
 };

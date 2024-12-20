@@ -1,15 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import React, { useState, useRef, useCallback } from "react";
+import { Box, Button, Snackbar, Alert } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "./template-components/Canvas";
@@ -17,6 +7,7 @@ import Toolbar from "./template-components/ToolBar";
 import { createTemplate, createSection } from "../service/templateService";
 
 import Headerv2 from "./template-components/Headerv2";
+import LayerList from "./template-components/LayerList";
 
 const CreateTemplate = () => {
   const [sections, setSections] = useState([]);
@@ -24,10 +15,13 @@ const CreateTemplate = () => {
   const [activeStyles, setActiveStyles] = useState({});
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [sectionCount, setSectionCount] = useState(1);
+
   const [templateData, setTemplateData] = useState({
     name: "",
     description: "",
-    accessType: "",
+    subscriptionPlanId: "",
+    thumbnailUrl: "",
     metaData: {},
   });
   const [snackbar, setSnackbar] = useState({
@@ -36,6 +30,31 @@ const CreateTemplate = () => {
     severity: "",
   });
 
+  const [selectedItem, setSelectedItem] = useState(""); // State để lưu giá trị của dropdown
+
+  const handleDropdownChange = (value) => {
+    setSelectedItem(value); // Cập nhật giá trị khi dropdown thay đổi
+    if (activeItem) {
+      // Cập nhật ID của component hiện tại khi chọn một item
+      setSections((prevSections) =>
+        prevSections.map((section) =>
+          section.id === activeItem.sectionId
+            ? {
+                ...section,
+                components: section.components.map((component) =>
+                  component.id === activeItem.componentId
+                    ? {
+                        ...component,
+                        id: `${component.id}-${value}`, // Thêm selectedItem vào ID của component
+                      }
+                    : component
+                ),
+              }
+            : section
+        )
+      );
+    }
+  };
   const isPanning = useRef(false);
   const startPoint = useRef({ x: 0, y: 0 });
 
@@ -45,7 +64,10 @@ const CreateTemplate = () => {
   const handleSaveSections = async () => {
     try {
       // Bước 1: Tạo template và lấy templateId
-      const savedTemplate = await createTemplate(templateData);
+      const savedTemplate = await createTemplate(
+        templateData,
+        templateData.thumbnailUrl
+      );
       console.log("Template:", savedTemplate);
       const templateID = savedTemplate.data?.id;
 
@@ -55,12 +77,11 @@ const CreateTemplate = () => {
 
       // Bước 2: Cập nhật các section với templateId và metadata
       const sectionsWithMetadata = sections.map((section) => ({
-        id: section.id,
-        name: section?.name,
-        details: section?.description,
+        // Đảm bảo truyền đúng templateId vào mỗi section
         templateId: templateID,
         metadata: {
-          components: section.components, // Đóng gói các components vào metadata
+          components: section.components,
+          style: section.style, // Đóng gói các components vào metadata
         },
       }));
 
@@ -68,13 +89,12 @@ const CreateTemplate = () => {
 
       // Bước 3: Lưu từng section vào cơ sở dữ liệu
       for (const section of sectionsWithMetadata) {
-        await createSection(section);
+        await createSection(section); // Lưu mỗi section với đúng templateId
       }
 
       // Bước 4: Hiển thị thông báo thành công
       showSnackbar("Lưu template và sections thành công!", "success");
     } catch (error) {
-      // Xử lý lỗi
       console.error("Lỗi khi lưu template và sections:", error);
       showSnackbar(error.message || "Lưu thất bại!", "error");
     }
@@ -96,6 +116,7 @@ const CreateTemplate = () => {
                     }
                   : component
               ),
+              style: { ...section.style, [key]: value },
             }
           : section
       )
@@ -129,8 +150,24 @@ const CreateTemplate = () => {
   }, []);
 
   const addSection = () => {
-    const newSection = { id: Date.now(), components: [] };
+    const newSection = {
+      id: `${sectionCount}-${Date.now()}`,
+      // id: Date.now().toString(),
+      components: [],
+      style: {
+        width: "100%",
+        minWidth: "800px",
+        height: "100%",
+        padding: 2,
+        position: "relative",
+        marginBottom: 2,
+        minHeight: "500px",
+        backgroundColor: "#f9f9f9",
+        transition: "border 0.3s ease",
+      },
+    };
     setSections((prevSections) => [...prevSections, newSection]);
+    setSectionCount((prevCount) => prevCount + 1); // Tăng giá trị sectionCount lên 1
     showSnackbar("New section added", "success");
   };
 
@@ -144,6 +181,21 @@ const CreateTemplate = () => {
   const handleComponentClick = (component) => {
     setActiveItem(component);
     setActiveStyles(component.style || {});
+  };
+
+  const handleSelectLayer = (layerId) => {
+    const selectedSection = sections.find((section) => section.id === layerId);
+    if (selectedSection) {
+      setActiveItem(null); // Hoặc cập nhật activeItem nếu cần
+      setActiveStyles(selectedSection.style || {});
+    }
+  };
+
+  const handleReorderSections = (newSections) => {
+    setSections(newSections);
+  };
+  const handleUpdateSections = (updatedSections) => {
+    setSections(updatedSections);
   };
 
   return (
@@ -173,15 +225,17 @@ const CreateTemplate = () => {
             display: "flex",
             height: "100%",
             overflow: "hidden",
-            flexDirection: "row-reverse",
+            flexDirection: "row", // Đảm bảo "row" để các phần tử nằm cạnh nhau
           }}
         >
-          <Toolbar
-            activeStyles={activeStyles}
-            handleStyleChange={handleStyleChange}
-            templateData={templateData}
-            setTemplateData={setTemplateData}
+          <LayerList
+            sections={sections}
+            onSelectLayer={handleSelectLayer}
+            onReorderSections={handleReorderSections}
+            onUpdateSections={handleUpdateSections}
           />
+
+          {/* Main Canvas */}
           <Box
             id="canvas"
             onWheel={handleWheel}
@@ -220,10 +274,21 @@ const CreateTemplate = () => {
                   setActiveItem={handleComponentClick}
                   activeItem={activeItem}
                   setActiveStyles={setActiveStyles}
+                  selectedItem={selectedItem}
                 />
               </Box>
             </Box>
           </Box>
+
+          {/* Toolbar nằm bên phải */}
+          <Toolbar
+            activeStyles={activeStyles}
+            handleStyleChange={handleStyleChange}
+            templateData={templateData}
+            setTemplateData={setTemplateData}
+            selectedItem={selectedItem}
+            onDropdownChange={handleDropdownChange}
+          />
         </Box>
         <Box
           sx={{
