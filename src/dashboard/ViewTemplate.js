@@ -207,26 +207,25 @@ const ViewTemplate = () => {
         <Grid item xs={12}>
           <Typography variant="h6">Sections</Typography>
           {template.sections && template.sections.length > 0 ? (
-            template.sections.map((section) => (
-              <Box
-                key={section.id}
-                sx={{
-                  position: section.metadata?.style.position,
-                  border: section.metadata?.style.border,
-                  padding: section.metadata?.style.padding,
-                  minHeight: section.metadata?.style.minHeight,
-                  marginBottom: section.metadata?.style.marginBottom,
-                  width: section.metadata?.style.minWidth,
-                  backgroundColor: section.metadata?.style.backgroundColor,
-                }}
-              >
-                {/* <Typography variant="h6">
-                  Section: {section.name || "Unnamed"}
-                </Typography> */}
-                {/* Render the components inside the section */}
-                {section.metadata?.components?.map(renderComponent)}
-              </Box>
-            ))
+            [...template.sections]
+              .sort((a, b) => parseInt(a.position) - parseInt(b.position)) // Sắp xếp theo position dạng số
+              .map((section) => (
+                <Box
+                  key={section.id}
+                  sx={{
+                    position: section.metadata?.style.position,
+                    border: section.metadata?.style.border,
+                    padding: section.metadata?.style.padding,
+                    minHeight: section.metadata?.style.minHeight,
+                    marginBottom: section.metadata?.style.marginBottom,
+                    width: section.metadata?.style.minWidth,
+                    backgroundColor: section.metadata?.style.backgroundColor,
+                  }}
+                >
+                  {/* Render the components inside the section */}
+                  {section.metadata?.components?.map(renderComponent)}
+                </Box>
+              ))
           ) : (
             <Typography>No sections available.</Typography>
           )}

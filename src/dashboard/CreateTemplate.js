@@ -63,42 +63,50 @@ const CreateTemplate = () => {
   };
   const handleSaveSections = async () => {
     try {
-      // Bước 1: Tạo template và lấy templateId
+      // Đánh lại vị trí (position) dưới dạng chuỗi
+      const updatedSections = sections.map((section, index) => ({
+        ...section,
+        position: String(index + 1), // Chuyển đổi position thành chuỗi
+      }));
+
+      setSections(updatedSections);
+
+      // Tạo template
       const savedTemplate = await createTemplate(
         templateData,
         templateData.thumbnailUrl
       );
-      console.log("Template:", savedTemplate);
       const templateID = savedTemplate.data?.id;
 
       if (!templateID) {
         throw new Error("Không thể lấy được templateId!");
       }
 
-      // Bước 2: Cập nhật các section với templateId và metadata
-      const sectionsWithMetadata = sections.map((section) => ({
-        // Đảm bảo truyền đúng templateId vào mỗi section
+      // Chuẩn bị dữ liệu sections với `position` dưới dạng chuỗi
+      const sectionsWithMetadata = updatedSections.map((section) => ({
         templateId: templateID,
+        position: section.position, // Sử dụng chuỗi cho position
         metadata: {
           components: section.components,
-          style: section.style, // Đóng gói các components vào metadata
+          style: section.style,
         },
       }));
 
-      console.log("Sections đã cập nhật:", sectionsWithMetadata);
+      console.log("Sections sẽ được lưu:", sectionsWithMetadata);
 
-      // Bước 3: Lưu từng section vào cơ sở dữ liệu
+      // Lưu từng section
       for (const section of sectionsWithMetadata) {
-        await createSection(section); // Lưu mỗi section với đúng templateId
+        await createSection(section);
       }
 
-      // Bước 4: Hiển thị thông báo thành công
       showSnackbar("Lưu template và sections thành công!", "success");
     } catch (error) {
       console.error("Lỗi khi lưu template và sections:", error);
       showSnackbar(error.message || "Lưu thất bại!", "error");
     }
   };
+
+
 
   const handleStyleChange = (key, value) => {
     if (!activeItem) return;
@@ -151,8 +159,8 @@ const CreateTemplate = () => {
 
   const addSection = () => {
     const newSection = {
-      id: `${sectionCount}-${Date.now()}`,
-      // id: Date.now().toString(),
+      id: `${Date.now()}`,
+      position: String(sections.length + 1), // Gán position dưới dạng chuỗi
       components: [],
       style: {
         width: "100%",
@@ -166,10 +174,13 @@ const CreateTemplate = () => {
         transition: "border 0.3s ease",
       },
     };
+
     setSections((prevSections) => [...prevSections, newSection]);
-    setSectionCount((prevCount) => prevCount + 1); // Tăng giá trị sectionCount lên 1
+
     showSnackbar("New section added", "success");
   };
+
+
 
   const handleCanvasClick = (event) => {
     if (event.target.id === "canvas") {
@@ -190,10 +201,16 @@ const CreateTemplate = () => {
       setActiveStyles(selectedSection.style || {});
     }
   };
-
   const handleReorderSections = (newSections) => {
-    setSections(newSections);
+    const updatedSections = newSections.map((section, index) => ({
+      ...section,
+      position: String(index + 1), // Đánh lại position dưới dạng chuỗi
+    }));
+
+    setSections(updatedSections); // Cập nhật danh sách sections
   };
+
+
   const handleUpdateSections = (updatedSections) => {
     setSections(updatedSections);
   };
