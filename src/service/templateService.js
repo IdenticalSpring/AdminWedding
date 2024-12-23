@@ -116,6 +116,7 @@ export const updateTemplate = async (id, templateData, thumbnail) => {
     formData.append("name", templateData.name);
     formData.append("description", templateData.description);
     formData.append("subscriptionPlanId", templateData.subscriptionPlanId);
+    formData.append("metaData", templateData.metaData);
     if (thumbnail) formData.append("thumbnail", thumbnail);
 
     const response = await AdminAPI.patch(`/templates/${id}`, formData, {
@@ -146,6 +147,17 @@ export const createSection = async (sectionData) => {
     return response.data;
   } catch (error) {
     console.error("Error creating section:", error);
+    throw error.response?.data || { message: "Failed to create section" };
+  }
+};
+export const updateSection = async (sectionData) => {
+  try {
+    const response = await AdminAPI.patch(`/sections/${sectionData.id}`, {
+      metadata: sectionData.metadata,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating section:", error);
     throw error.response?.data || { message: "Failed to create section" };
   }
 };

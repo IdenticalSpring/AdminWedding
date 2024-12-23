@@ -5,6 +5,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import EditIcon from "@mui/icons-material/Edit";
 import Header from "./components/Header";
 import {
   getAllTemplates,
@@ -53,6 +54,9 @@ const TemplateManagement = () => {
 
     fetchTemplates();
   }, []);
+  const handleEdit = (id) => {
+    navigate(`/edit-template/${id}`);
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -153,6 +157,11 @@ const TemplateManagement = () => {
           icon={<RemoveRedEyeIcon />}
           label="View"
           onClick={() => handleView(params.id)}
+        />,
+        <GridActionsCellItem
+          icon={<EditIcon />}
+          label="Edit"
+          onClick={() => handleEdit(params.id)} // Hàm xử lý điều hướng chỉnh sửa
         />,
         <GridActionsCellItem
           icon={<ContentCopyIcon />}
