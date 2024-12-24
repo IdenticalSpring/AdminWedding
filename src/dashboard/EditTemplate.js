@@ -1,22 +1,27 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Box, Button, Snackbar, Alert } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "./template-components/Canvas";
 import Toolbar from "./template-components/ToolBar";
-import { createTemplate, createSection } from "../service/templateService";
-
+import {
+  getTemplateById,
+  updateTemplate,
+  updateSection,
+} from "../service/templateService";
 import Headerv2 from "./template-components/Headerv2";
 import LayerList from "./template-components/LayerList";
+import { useParams } from "react-router-dom";
 
-const CreateTemplate = () => {
+const EditTemplate = () => {
+  const { id } = useParams(); // Lấy ID từ URL
   const [sections, setSections] = useState([]);
   const [activeItem, setActiveItem] = useState(null);
   const [activeStyles, setActiveStyles] = useState({});
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
-  const [sectionCount, setSectionCount] = useState(1);
-
+  const isPanning = useRef(false);
+  const startPoint = useRef({ x: 0, y: 0 });
   const [templateData, setTemplateData] = useState({
     name: "",
     description: "",
@@ -30,6 +35,86 @@ const CreateTemplate = () => {
     severity: "",
   });
 
+  const fetchTemplateData = async () => {
+    try {
+      const template = await getTemplateById(id);
+      setTemplateData(template.data);
+      setSections(
+        template.data.sections
+          .map((section) => ({
+            ...section,
+            components: section.metadata?.components || [],
+            style: section.metadata?.style || {},
+          }))
+          .sort((a, b) => parseInt(a.position) - parseInt(b.position)) // Sắp xếp theo position
+      );
+    } catch (error) {
+      console.error("Error fetching template data:", error);
+      showSnackbar("Failed to load template data!", "error");
+    }
+  };
+
+  useEffect(() => {
+    fetchTemplateData();
+  }, [id]);
+
+  const showSnackbar = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleSaveTemplate = async () => {
+    try {
+      // Cập nhật template
+      const saveTemplate = await updateTemplate(
+        id,
+        templateData,
+        templateData.thumbnailUrl
+      );
+
+      // Gửi từng section để cập nhật
+      for (const section of sections) {
+        await updateSection({
+          id: section.id,
+          metadata: {
+            components: section.components,
+            style: section.style,
+          },
+        });
+      }
+      console.log("Tempalte", saveTemplate);
+
+      showSnackbar("Template updated successfully!", "success");
+    } catch (error) {
+      console.error("Error saving template:", error);
+      showSnackbar(
+        error.response?.data?.message || "Failed to save template!",
+        "error"
+      );
+    }
+  };
+
+  const handleStyleChange = (key, value) => {
+    if (!activeItem) return;
+    setActiveStyles((prev) => ({ ...prev, [key]: value }));
+    setSections((prev) =>
+      prev.map((section) =>
+        section.id === activeItem.sectionId
+          ? {
+              ...section,
+              components: section.components.map((component) =>
+                component.id === activeItem.componentId
+                  ? {
+                      ...component,
+                      style: { ...component.style, [key]: value },
+                    }
+                  : component
+              ),
+              style: { ...section.style, [key]: value },
+            }
+          : section
+      )
+    );
+  };
   const [selectedItem, setSelectedItem] = useState(""); // State để lưu giá trị của dropdown
 
   const handleDropdownChange = (value) => {
@@ -54,81 +139,6 @@ const CreateTemplate = () => {
         )
       );
     }
-  };
-  const isPanning = useRef(false);
-  const startPoint = useRef({ x: 0, y: 0 });
-
-  const showSnackbar = (message, severity) => {
-    setSnackbar({ open: true, message, severity });
-  };
-  const handleSaveSections = async () => {
-    try {
-      // Đánh lại vị trí (position) dưới dạng chuỗi
-      const updatedSections = sections.map((section, index) => ({
-        ...section,
-        position: String(index + 1), // Chuyển đổi position thành chuỗi
-      }));
-
-      setSections(updatedSections);
-
-      // Tạo template
-      const savedTemplate = await createTemplate(
-        templateData,
-        templateData.thumbnailUrl
-      );
-      const templateID = savedTemplate.data?.id;
-
-      if (!templateID) {
-        throw new Error("Không thể lấy được templateId!");
-      }
-
-      // Chuẩn bị dữ liệu sections với `position` dưới dạng chuỗi
-      const sectionsWithMetadata = updatedSections.map((section) => ({
-        templateId: templateID,
-        position: section.position, // Sử dụng chuỗi cho position
-        metadata: {
-          components: section.components,
-          style: section.style,
-        },
-      }));
-
-      console.log("Sections sẽ được lưu:", sectionsWithMetadata);
-
-      // Lưu từng section
-      for (const section of sectionsWithMetadata) {
-        await createSection(section);
-      }
-
-      showSnackbar("Lưu template và sections thành công!", "success");
-    } catch (error) {
-      console.error("Lỗi khi lưu template và sections:", error);
-      showSnackbar(error.message || "Lưu thất bại!", "error");
-    }
-  };
-
-
-
-  const handleStyleChange = (key, value) => {
-    if (!activeItem) return;
-    setActiveStyles((prev) => ({ ...prev, [key]: value }));
-    setSections((prev) =>
-      prev.map((section) =>
-        section.id === activeItem.sectionId
-          ? {
-              ...section,
-              components: section.components.map((component) =>
-                component.id === activeItem.componentId
-                  ? {
-                      ...component,
-                      style: { ...component.style, [key]: value },
-                    }
-                  : component
-              ),
-              style: { ...section.style, [key]: value },
-            }
-          : section
-      )
-    );
   };
 
   const handleWheel = (event) => {
@@ -160,7 +170,7 @@ const CreateTemplate = () => {
   const addSection = () => {
     const newSection = {
       id: `${Date.now()}`,
-      position: String(sections.length + 1), // Gán position dưới dạng chuỗi
+      position: String(sections.length + 1),
       components: [],
       style: {
         width: "100%",
@@ -176,43 +186,12 @@ const CreateTemplate = () => {
     };
 
     setSections((prevSections) => [...prevSections, newSection]);
-
     showSnackbar("New section added", "success");
-  };
-
-
-
-  const handleCanvasClick = (event) => {
-    if (event.target.id === "canvas") {
-      setActiveItem(null);
-      setActiveStyles({});
-    }
   };
 
   const handleComponentClick = (component) => {
     setActiveItem(component);
     setActiveStyles(component.style || {});
-  };
-
-  const handleSelectLayer = (layerId) => {
-    const selectedSection = sections.find((section) => section.id === layerId);
-    if (selectedSection) {
-      setActiveItem(null); // Hoặc cập nhật activeItem nếu cần
-      setActiveStyles(selectedSection.style || {});
-    }
-  };
-  const handleReorderSections = (newSections) => {
-    const updatedSections = newSections.map((section, index) => ({
-      ...section,
-      position: String(index + 1), // Đánh lại position dưới dạng chuỗi
-    }));
-
-    setSections(updatedSections); // Cập nhật danh sách sections
-  };
-
-
-  const handleUpdateSections = (updatedSections) => {
-    setSections(updatedSections);
   };
 
   return (
@@ -224,7 +203,6 @@ const CreateTemplate = () => {
           height: "100vh",
           backgroundColor: "#FCFCFC",
         }}
-        onClick={handleCanvasClick}
       >
         <Box
           sx={{
@@ -237,22 +215,8 @@ const CreateTemplate = () => {
         >
           <Headerv2 />
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            height: "100%",
-            overflow: "hidden",
-            flexDirection: "row", // Đảm bảo "row" để các phần tử nằm cạnh nhau
-          }}
-        >
-          <LayerList
-            sections={sections}
-            onSelectLayer={handleSelectLayer}
-            onReorderSections={handleReorderSections}
-            onUpdateSections={handleUpdateSections}
-          />
-
-          {/* Main Canvas */}
+        <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
+          <LayerList sections={sections} onUpdateSections={setSections} />
           <Box
             id="canvas"
             onWheel={handleWheel}
@@ -262,9 +226,9 @@ const CreateTemplate = () => {
             onMouseLeave={handleMouseUp}
             sx={{
               flex: 1,
-              backgroundColor: "#FCFCFC",
-              cursor: isPanning.current ? "grabbing" : "grab",
               position: "relative",
+              cursor: isPanning.current ? "grabbing" : "grab",
+              backgroundColor: "#FCFCFC",
             }}
           >
             <Box
@@ -291,13 +255,10 @@ const CreateTemplate = () => {
                   setActiveItem={handleComponentClick}
                   activeItem={activeItem}
                   setActiveStyles={setActiveStyles}
-                  selectedItem={selectedItem}
                 />
               </Box>
             </Box>
           </Box>
-
-          {/* Toolbar nằm bên phải */}
           <Toolbar
             activeStyles={activeStyles}
             handleStyleChange={handleStyleChange}
@@ -328,7 +289,7 @@ const CreateTemplate = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleSaveSections}
+            onClick={handleSaveTemplate}
             sx={{ padding: "10px 20px", borderRadius: "5px", fontSize: "16px" }}
           >
             Save Template
@@ -347,4 +308,4 @@ const CreateTemplate = () => {
   );
 };
 
-export default CreateTemplate;
+export default EditTemplate;

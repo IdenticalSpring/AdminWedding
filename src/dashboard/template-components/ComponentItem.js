@@ -20,6 +20,7 @@ const ComponentItem = ({
   setActiveStyles,
   active,
   onDrag,
+  setGuides,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -61,10 +62,21 @@ const ComponentItem = ({
       ...component.style,
       left: data.x,
       top: data.y,
+      width: component.style.width,
+      height: component.style.height,
     };
-    onDrag({ left: data.x, top: data.y });
-  };
+    onDrag({
+      left: data.x,
+      top: data.y,
+      width: component.style.width,
+      height: component.style.height,
+    });
 
+    // Reset guides
+    setTimeout(() => {
+      setGuides({ vertical: null, horizontal: null, snapLines: [] });
+    }, 500);
+  };
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -84,6 +96,8 @@ const ComponentItem = ({
       defaultPosition={{
         x: component.style.left,
         y: component.style.top,
+        width: component.style.width,
+        height: component.style.height,
       }}
       onStop={handleDragStop}
     >

@@ -158,15 +158,19 @@ const Toolbar = ({
               />
               {templateData.thumbnailUrl && (
                 <Box sx={{ marginTop: "8px" }}>
-                  <img
-                    src={URL.createObjectURL(templateData.thumbnailUrl)}
-                    alt="Thumbnail"
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                    }}
-                  />
+                  {templateData.thumbnailUrl instanceof File ? (
+                    <img
+                      src={URL.createObjectURL(templateData.thumbnailUrl)}
+                      alt="Thumbnail"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <span>Invalid file</span>
+                  )}
                 </Box>
               )}
             </Box>
