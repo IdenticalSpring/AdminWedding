@@ -26,11 +26,6 @@ const TemplateManagement = () => {
     const fetchTemplates = async () => {
       try {
         const response = await getAllTemplates(1);
-
-        // Log the raw response data
-        console.log("Raw Response Data:", response.data);
-
-        // Process the data to ensure subscriptionPlan exists
         const processedData = response.data.map((template) => ({
           ...template,
           subscriptionPlan: template.subscriptionPlan || {
@@ -40,10 +35,6 @@ const TemplateManagement = () => {
             duration: 0,
           },
         }));
-
-        // Log the processed data
-        console.log("Processed Templates:", processedData);
-
         setTemplates(processedData);
       } catch (error) {
         console.error("Error fetching templates:", error);
@@ -118,11 +109,7 @@ const TemplateManagement = () => {
         // Chờ tất cả các sections được duplicate
         await Promise.all(duplicateSectionsPromises);
       }
-
-      // Cập nhật danh sách templates trong UI
       setTemplates((prevTemplates) => [...prevTemplates, newTemplate]);
-
-      console.log("Template and sections duplicated successfully!");
     } catch (error) {
       console.error("Error duplicating template and sections:", error);
     }

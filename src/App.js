@@ -12,6 +12,7 @@ import DashboardLayoutv2 from "./dashboard/Dashboardv2";
 import ViewTemplate from "./dashboard/ViewTemplate";
 import SubscriptionPlans from "./dashboard/SubscriptionPlans";
 import EditTemplate from "./dashboard/EditTemplate";
+import Order from "./dashboard/Order";
 
 function App() {
   return (
@@ -66,6 +67,16 @@ function App() {
             <DashboardLayoutv2>
               <PrivateRoute>
                 <SubscriptionPlans />
+              </PrivateRoute>
+            </DashboardLayoutv2>
+          }
+        />
+        <Route
+          path="/order"
+          element={
+            <DashboardLayoutv2>
+              <PrivateRoute>
+                <Order />
               </PrivateRoute>
             </DashboardLayoutv2>
           }

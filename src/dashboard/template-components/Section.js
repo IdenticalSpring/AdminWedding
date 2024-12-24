@@ -32,7 +32,7 @@ const Section = ({
       };
 
       const newComponent = {
-        id: Date.now().toString(),
+        id: Date.now(),
         type: item.type,
         style: {
           ...dropPosition,
