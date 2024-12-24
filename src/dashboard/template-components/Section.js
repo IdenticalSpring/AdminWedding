@@ -97,30 +97,33 @@ const Section = ({
   };
 
   const handleDragComponent = (compId, newPosition) => {
-    const newGuides = calculateFigmaLikeGuides(compId, newPosition);
+    const snapThreshold = 10; // Ngưỡng hít (10px)
+    const { left, top, width, height } = newPosition;
 
-    // Snap to closest guide if within threshold
-    if (newGuides.vertical.length > 0) {
-      const closestVertical = newGuides.vertical.reduce((prev, curr) =>
-        Math.abs(curr - newPosition.left) < Math.abs(prev - newPosition.left)
-          ? curr
-          : prev
-      );
-      if (Math.abs(closestVertical - newPosition.left) < 5) {
-        newPosition.left = closestVertical;
-      }
-    }
+    let snappedPosition = { ...newPosition };
 
-    if (newGuides.horizontal.length > 0) {
-      const closestHorizontal = newGuides.horizontal.reduce((prev, curr) =>
-        Math.abs(curr - newPosition.top) < Math.abs(prev - newPosition.top)
-          ? curr
-          : prev
-      );
-      if (Math.abs(closestHorizontal - newPosition.top) < 5) {
-        newPosition.top = closestHorizontal;
+    section.components.forEach((comp) => {
+      if (comp.id !== compId) {
+        const compLeft = comp.style.left;
+        const compTop = comp.style.top;
+        const compWidth = comp.style.width;
+        const compHeight = comp.style.height;
+
+        // Hít theo chiều dọc
+        if (Math.abs(left - (compLeft + compWidth)) < snapThreshold) {
+          snappedPosition.left = compLeft + compWidth; // Hít vào cạnh phải của comp
+        } else if (Math.abs(left + width - compLeft) < snapThreshold) {
+          snappedPosition.left = compLeft - width; // Hít vào cạnh trái của comp
+        }
+
+        // Hít theo chiều ngang
+        if (Math.abs(top - (compTop + compHeight)) < snapThreshold) {
+          snappedPosition.top = compTop + compHeight; // Hít vào cạnh dưới của comp
+        } else if (Math.abs(top + height - compTop) < snapThreshold) {
+          snappedPosition.top = compTop - height; // Hít vào cạnh trên của comp
+        }
       }
-    }
+    });
 
     setSections((prevSections) => {
       const newSections = [...prevSections];
@@ -130,12 +133,13 @@ const Section = ({
       if (componentIndex !== -1) {
         newSections[index].components[componentIndex].style = {
           ...newSections[index].components[componentIndex].style,
-          ...newPosition,
+          ...snappedPosition,
         };
       }
       return newSections;
     });
 
+    const newGuides = calculateFigmaLikeGuides(compId, snappedPosition);
     setGuides(newGuides);
   };
 
