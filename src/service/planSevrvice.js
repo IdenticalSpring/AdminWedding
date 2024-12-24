@@ -78,3 +78,30 @@ export const updatePlanById = async (id, updatedData) => {
     throw error;
   }
 };
+export const createSubscriptionPlans = async (data) => {
+  const response = await AdminAPI.post(`/subscription-plans`, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.data;
+};
+
+export const getAllOrders = async (page, limit) => {
+  const response = await AdminAPI.get(`/subscriptions?page=${page}&limit=${limit}`);
+  return response.data;
+};
+
+export const createOrder = async (data) => {
+  const response = await AdminAPI.post(`/subscriptions/create`, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.data;
+};
+
+export const deleteOrder = async (id) => {
+  const response = await AdminAPI.get(`/subscriptions/${id}`);
+  return response.data;
+};

@@ -10,17 +10,15 @@ import {
   DialogContent,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Header from "./components/Header";
 import {
   fetchAllPlans,
   deletePlanById,
   updatePlanById,
+  createSubscriptionPlans,
 } from "../service/planSevrvice";
 
 const SubscriptionPlans = () => {
@@ -28,8 +26,8 @@ const SubscriptionPlans = () => {
   const [loading, setLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState("add");
   const [editForm, setEditForm] = useState({
     id: "",
     name: "",
@@ -38,7 +36,17 @@ const SubscriptionPlans = () => {
     duration: "",
   });
 
-  // Hàm tải dữ liệu
+  const openAddDialog = () => {
+    setEditForm({
+      name: "",
+      description: "",
+      price: "",
+      duration: "",
+    });
+    setDialogMode("add");
+    setEditDialogOpen(true);
+  };
+
   const fetchPlans = async () => {
     try {
       setLoading(true);
@@ -46,7 +54,7 @@ const SubscriptionPlans = () => {
       setPlans(
         data.data.map((plan) => ({
           ...plan,
-          id: plan.id, // Ensure each row has a unique `id`
+          id: plan.id,
         }))
       );
     } catch (error) {
@@ -58,6 +66,7 @@ const SubscriptionPlans = () => {
 
   const openEditDialog = (plan) => {
     setEditForm(plan);
+    setDialogMode("edit");
     setEditDialogOpen(true);
   };
 
@@ -73,25 +82,28 @@ const SubscriptionPlans = () => {
     try {
       const { id, name, description, price, duration } = editForm;
 
-      // Payload chỉ chứa các trường cần thiết
       const payload = {
         name,
         description,
         price: Number(price),
         duration: Number(duration),
       };
+      if (dialogMode === "add") {
+        console.log(payload);
 
-      console.log("Payload sent to API:", payload);
-
-      await updatePlanById(id, payload);
-
+        await createSubscriptionPlans(payload);
+      } else if (dialogMode === "edit") {
+        await updatePlanById(id, payload);
+      }
       // Tải lại danh sách gói
       await fetchPlans();
       setEditDialogOpen(false);
     } catch (error) {
-      console.error("Failed to update plan:", error.response?.data || error);
       alert(
-        `Error: ${error.response?.data?.message || "Failed to update plan."}`
+        `Error: ${
+          error.response?.data?.message ||
+          `Failed to ${dialogMode === "add" ? "add" : "update"} plan.`
+        }`
       );
     }
   };
@@ -105,7 +117,7 @@ const SubscriptionPlans = () => {
 
     try {
       await deletePlanById(selectedPlan.id);
-      await fetchPlans(); // Làm mới danh sách sau khi xóa
+      await fetchPlans();
       setDeleteDialogOpen(false);
     } catch (error) {
       console.error("Failed to delete plan:", error);
@@ -124,16 +136,6 @@ const SubscriptionPlans = () => {
       flex: 1,
       getActions: (params) => [
         <GridActionsCellItem
-          icon={<RemoveRedEyeIcon />}
-          label="View"
-          onClick={() => handleView(params.row)}
-        />,
-        <GridActionsCellItem
-          icon={<ContentCopyIcon />}
-          label="Duplicate"
-          onClick={() => handleDuplicate(params.row)}
-        />,
-        <GridActionsCellItem
           icon={<DeleteIcon />}
           label="Delete"
           onClick={() => {
@@ -149,14 +151,6 @@ const SubscriptionPlans = () => {
       ],
     },
   ];
-
-  const handleView = (plan) => {
-    console.log("View plan:", plan);
-  };
-
-  const handleDuplicate = (plan) => {
-    console.log("Duplicate plan:", plan);
-  };
 
   if (loading) {
     return (
@@ -188,7 +182,7 @@ const SubscriptionPlans = () => {
             variant="contained"
             color="primary"
             startIcon={<AddIcon />}
-            onClick={() => console.log("Add new plan")}
+            onClick={openAddDialog}
           >
             Add New Plan
           </Button>
@@ -219,7 +213,11 @@ const SubscriptionPlans = () => {
         </DialogActions>
       </Dialog>
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle>Edit Subscription Plan</DialogTitle>
+        <DialogTitle>
+          {dialogMode === "add"
+            ? "Add New Subscription Plan"
+            : "Edit Subscription Plan"}
+        </DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
