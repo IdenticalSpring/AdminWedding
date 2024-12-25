@@ -28,6 +28,7 @@ const mainListItems = [
     icon: <AssignmentRoundedIcon />,
     link: "/subscription_plans",
   },
+  { text: "Letter", icon: <AssignmentRoundedIcon />, link: "/letter" },
 ];
 
 const secondaryListItems = [
