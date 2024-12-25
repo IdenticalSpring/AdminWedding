@@ -297,6 +297,19 @@ const Section = ({
           setGuides={setGuides}
         />
       ))}
+      {section.responsive === "responsive_section" && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: "50%",
+            height: "100%",
+            width: "1px",
+            borderLeft: "1px dashed #000",
+            zIndex: 5,
+          }}
+        />
+      )}
     </Box>
   );
 };

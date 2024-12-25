@@ -1,11 +1,11 @@
 import React, { useState, useRef, useCallback } from "react";
-import { Box, Button, Snackbar, Alert } from "@mui/material";
+import { Box, Button, Snackbar, Alert, CircularProgress } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "./template-components/Canvas";
 import Toolbar from "./template-components/ToolBar";
 import { createTemplate, createSection } from "../service/templateService";
-
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Headerv2 from "./template-components/Headerv2";
 import LayerList from "./template-components/LayerList";
 
@@ -16,7 +16,8 @@ const CreateTemplate = () => {
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [sectionCount, setSectionCount] = useState(1);
-
+  const [isLoading, setIsLoading] = useState(false); // State loading
+  const navigate = useNavigate(); // Initialize useNavigate
   const [templateData, setTemplateData] = useState({
     name: "",
     description: "",
@@ -62,6 +63,7 @@ const CreateTemplate = () => {
     setSnackbar({ open: true, message, severity });
   };
   const handleSaveSections = async () => {
+    setIsLoading(true); // Bật loading
     try {
       // Đánh lại vị trí (position) dưới dạng chuỗi
       const updatedSections = sections.map((section, index) => ({
@@ -101,9 +103,12 @@ const CreateTemplate = () => {
       }
 
       showSnackbar("Lưu template và sections thành công!", "success");
+      setTimeout(() => navigate("/template"), 1000); // Chuyển hướng sau 1s
     } catch (error) {
       console.error("Lỗi khi lưu template và sections:", error);
       showSnackbar(error.message || "Lưu thất bại!", "error");
+    } finally {
+      setIsLoading(false); // Tắt loading
     }
   };
 
@@ -326,9 +331,14 @@ const CreateTemplate = () => {
             variant="contained"
             color="primary"
             onClick={handleSaveSections}
+            disabled={isLoading}
             sx={{ padding: "10px 20px", borderRadius: "5px", fontSize: "16px" }}
           >
-            Save Template
+            {isLoading ? (
+              <CircularProgress size={24} color="white" />
+            ) : (
+              "Save Template"
+            )}
           </Button>
         </Box>
       </Box>
