@@ -211,6 +211,44 @@ export const getAllSubscription = async () => {
     throw error.response?.data || { message: "Failed to fetch subcription" };
   }
 };
+export const createInvitation = async (invitationData) => {
+  try {
+    const response = await AdminAPI.post(`/invitations`, invitationData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating invitation:", error);
+    throw error.response?.data || { message: "Failed to create invitation" };
+  }
+};
+export const getInvitationById = async (id) => {
+  try {
+    const response = await AdminAPI.get(`/invitations/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching invitation by ID:", error);
+    throw error.response?.data || { message: "Failed to fetch invitation" };
+  }
+};
+export const updateInvitation = async (invitationData) => {
+  try {
+    const { id, ...dataWithoutId } = invitationData; // Loại bỏ `id` ra khỏi dữ liệu
+    const response = await AdminAPI.put(`/invitations/${id}`, dataWithoutId);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating invitation:", error);
+    throw error.response?.data || { message: "Failed to update invitation" };
+  }
+};
+
+export const deleteInvitation = async (invitationId) => {
+  try {
+    const response = await AdminAPI.delete(`/invitations/${invitationId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting invitation:", error);
+    throw error.response?.data || { message: "Failed to delete invitation" };
+  }
+};
 
 export default {
   getAllTemplates,
@@ -221,4 +259,8 @@ export default {
   createSection,
   getSectionsByTemplateId,
   uploadImages,
+  createInvitation,
+  getInvitationById,
+  updateInvitation,
+  deleteInvitation
 };
