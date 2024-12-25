@@ -242,13 +242,14 @@ export const updateInvitation = async (invitationData) => {
 
 export const deleteInvitation = async (invitationId) => {
   try {
-    const response = await AdminAPI.delete(`/invitations/${invitationId}`);
+    const response = await AdminAPI.delete(`/invitations/by-template/${invitationId}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting invitation:", error);
     throw error.response?.data || { message: "Failed to delete invitation" };
   }
 };
+
 
 export default {
   getAllTemplates,

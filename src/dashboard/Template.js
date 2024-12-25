@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Button, Box } from "@mui/material";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import {
+  Typography,
+  Button,
+  Box,
+  Divider,
+  IconButton,
+  Tooltip
+} from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import EditIcon from "@mui/icons-material/Edit";
-import Header from "./components/Header";
+import PreviewIcon from "@mui/icons-material/Preview";
 import {
   getAllTemplates,
   deleteTemplateById,
   duplicateTemplate,
   getSectionsByTemplateId,
   createSectionDuplicate,
+  deleteInvitation,
 } from "../service/templateService";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
+import Header from "./components/Header";
+
+
 
 const TemplateManagement = () => {
   const [templates, setTemplates] = useState([]);
@@ -45,6 +56,7 @@ const TemplateManagement = () => {
 
     fetchTemplates();
   }, []);
+
   const handleEdit = (id) => {
     navigate(`/edit-template/${id}`);
   };
@@ -68,7 +80,6 @@ const TemplateManagement = () => {
 
   const handleDuplicate = async (id) => {
     try {
-      // Lấy dữ liệu template gốc
       const originalTemplate = templates.find((template) => template.id === id);
 
       if (!originalTemplate) {
@@ -76,43 +87,65 @@ const TemplateManagement = () => {
         return;
       }
 
-      // Gửi yêu cầu sao chép template lên server
       const duplicatedTemplate = {
         ...originalTemplate,
-        id: null, // Đảm bảo ID null để server tạo ID mới
-        name: `${originalTemplate.name} (Copy)`, // Thêm "Copy" vào tên
+        id: null,
+        name: `${originalTemplate.name} (Copy)`,
       };
 
-      // Gọi API để duplicate template
       const response = await duplicateTemplate(
         duplicatedTemplate,
         duplicatedTemplate.thumbnailUrl
       );
-      const newTemplate = response.data; // Template mới đã được tạo
+      const newTemplate = response.data;
 
-      // Lấy danh sách các sections của template gốc
-      const sectionsResponse = await getSectionsByTemplateId(
-        originalTemplate.id
-      );
+      const sectionsResponse = await getSectionsByTemplateId(originalTemplate.id);
       const sections = sectionsResponse.data;
 
       if (sections.length > 0) {
-        // Duplicate từng section với templateId mới
         const duplicateSectionsPromises = sections.map((section) =>
           createSectionDuplicate({
             ...section,
-            id: uuidv4(), // Để server tự sinh ID
-            templateId: newTemplate.id, // Liên kết với template mới
+            id: uuidv4(),
+            templateId: newTemplate.id,
           })
         );
 
-        // Chờ tất cả các sections được duplicate
         await Promise.all(duplicateSectionsPromises);
       }
       setTemplates((prevTemplates) => [...prevTemplates, newTemplate]);
     } catch (error) {
       console.error("Error duplicating template and sections:", error);
     }
+  };
+
+  const handleCreateLetter = (id) => {
+    navigate(`/create-letter/${id}`);
+  };
+
+
+  const handleDeleteInvitation = async (id) => {
+    try {
+      // Xác nhận trước khi xóa
+      const confirmDelete = window.confirm(
+        "Bạn có chắc chắn muốn xóa lời mời này không?"
+      );
+      if (!confirmDelete) return;
+
+      // Gọi API xóa
+      await deleteInvitation(id);
+
+      // Xử lý sau khi xóa thành công
+      alert("Lời mời đã được xóa thành công!");
+    } catch (error) {
+      console.error("Lỗi khi xóa lời mời:", error);
+      alert(error.message || "Xóa lời mời thất bại!");
+    }
+  };
+
+
+  const handlePreviewInvitation = (id) => {
+    navigate(`/preview-invitation/${id}`);
   };
 
   const columns = [
@@ -137,30 +170,65 @@ const TemplateManagement = () => {
     {
       field: "actions",
       headerName: "Actions",
-      type: "actions",
-      flex: 1,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<RemoveRedEyeIcon />}
-          label="View"
-          onClick={() => handleView(params.id)}
-        />,
-        <GridActionsCellItem
-          icon={<EditIcon />}
-          label="Edit"
-          onClick={() => handleEdit(params.id)} // Hàm xử lý điều hướng chỉnh sửa
-        />,
-        <GridActionsCellItem
-          icon={<ContentCopyIcon />}
-          label="Duplicate"
-          onClick={() => handleDuplicate(params.id)}
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={() => handleDelete(params.id)}
-        />,
-      ],
+      flex: 3,
+      renderCell: (params) => (
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', width: '100%' }}>
+          {/* Template Actions */}
+          <Box sx={{
+            display: 'flex',
+            gap: 0.5,
+            borderRight: '1px solid #e0e0e0',
+            pr: 1,
+            alignItems: 'center'
+          }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', mr: 1 }}>
+              Template:
+            </Typography>
+            <Tooltip title="View">
+              <IconButton size="small" onClick={() => handleView(params.id)}>
+                <RemoveRedEyeIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Edit">
+              <IconButton size="small" onClick={() => handleEdit(params.id)}>
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Duplicate">
+              <IconButton size="small" onClick={() => handleDuplicate(params.id)}>
+                <ContentCopyIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete Template">
+              <IconButton size="small" onClick={() => handleDelete(params.id)}>
+                <DeleteIcon fontSize="small" color="error" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+
+          {/* Letter Actions */}
+          <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', mr: 1 }}>
+              Letter:
+            </Typography>
+            <Tooltip title="Create Letter">
+              <IconButton size="small" onClick={() => handleCreateLetter(params.id)}>
+                <AddIcon fontSize="small" color="primary" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Preview Invitation">
+              <IconButton size="small" onClick={() => handlePreviewInvitation(params.id)}>
+                <PreviewIcon fontSize="small" color="primary" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete Invitation">
+              <IconButton size="small" onClick={() => handleDeleteInvitation(params.id)}>
+                <DeleteIcon fontSize="small" color="error" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+      ),
     },
   ];
 
@@ -183,16 +251,11 @@ const TemplateManagement = () => {
     <>
       <Header />
       <Box sx={{ padding: 2 }}>
-        {/* <Typography variant="h4" gutterBottom>
-          Template Management
-        </Typography> */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            marginBottom: 2,
-          }}
-        >
+        <Box sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: 2,
+        }}>
           <Button
             variant="contained"
             startIcon={<AddIcon />}

@@ -20,7 +20,7 @@ const CreateInvitation = () => {
     const startPoint = useRef({ x: 0, y: 0 });
     const [invitationData, setInvitationData] = useState({
         title: "",
-        template_userId: id,
+        templateId: id,
         metadata: {},
     });
     const [existingInvitation, setExistingInvitation] = useState(false);
@@ -66,7 +66,7 @@ const CreateInvitation = () => {
         setInvitationData({
             id: "",
             title: "",
-            template_userId: id,
+            templateId: id,
             metadata: {},
         });
         setSections([createDefaultSection()]);

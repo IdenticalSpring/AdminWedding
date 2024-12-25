@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { userAPI } from "../../../service/user";
+
 import { Box, Typography, Snackbar, Alert } from "@mui/material";
+import { getTemplateById } from "../service/templateService";
 
 const ViewInvitation = () => {
-    const { id } = useParams(); // `id` là `linkName`
+    const { id } = useParams(); 
     const [invitation, setInvitation] = useState(null);
     const [sections, setSections] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -17,9 +18,9 @@ const ViewInvitation = () => {
     useEffect(() => {
         const fetchTemplateData = async () => {
             try {
-                const response = await userAPI.getTemplateUserBylinkName(id);
+                const response = await getTemplateById(id);
                 const data = response.data;
-
+                console.log(data.invitation);
                 if (data.invitation) {
                     setInvitation(data.invitation);
                     const processedSections = processMetadataToSections(data.invitation.metadata);
@@ -56,17 +57,33 @@ const ViewInvitation = () => {
                             left: component.style.left,
                             top: component.style.top,
                             fontSize: component.style.fontSize,
-                            fontFamily: component.style.fontFamily,
+                            fontFamily: component.style.fontFamily || "Arial",
                             width: component.style.width,
                             height: component.style.height,
-                            color: component.style.color,
-                            backgroundColor: component.style.fillColor,
+                            color: component.style.color || "#000",
+                            backgroundColor: component.style.fillColor || "transparent",
                         }}
                     >
-                        <Typography variant="body1">
-                            {component.text || "Text"}
+                        <Typography variant="body1" sx={{ wordWrap: "break-word" }}>
+                            {component.text || "Sample Text"}
                         </Typography>
                     </Box>
+                );
+            case "circle":
+                return (
+                    <Box
+                        key={component.id}
+                        sx={{
+                            position: "absolute",
+                            left: component.style.left,
+                            top: component.style.top,
+                            width: component.style.width,
+                            height: component.style.height,
+                            backgroundColor: component.style.fillColor || "#000",
+                            borderRadius: "50%",
+                            border: component.style.border || "none",
+                        }}
+                    />
                 );
             case "image":
                 return (
@@ -78,11 +95,10 @@ const ViewInvitation = () => {
                             top: component.style.top,
                             width: component.style.width,
                             height: component.style.height,
-                            backgroundColor: component.style.fillColor || "#ccc",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            border: "1px dashed #aaa",
+                            backgroundColor: component.style.fillColor || "transparent",
                         }}
                     >
                         {component.src ? (
@@ -102,11 +118,11 @@ const ViewInvitation = () => {
                         )}
                     </Box>
                 );
-            // Other cases...
             default:
                 return null;
         }
     };
+
 
     if (loading) {
         return (
@@ -145,9 +161,7 @@ const ViewInvitation = () => {
                     <Typography variant="h4" gutterBottom>
                         {invitation.title || "Untitled Invitation"}
                     </Typography>
-                    <Typography variant="subtitle1" gutterBottom>
-                        {invitation.message || "No message provided"}
-                    </Typography>
+                  
                 </>
             )}
             <Box

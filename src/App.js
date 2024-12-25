@@ -12,9 +12,8 @@ import DashboardLayoutv2 from "./dashboard/Dashboardv2";
 import ViewTemplate from "./dashboard/ViewTemplate";
 import SubscriptionPlans from "./dashboard/SubscriptionPlans";
 import EditTemplate from "./dashboard/EditTemplate";
-import ListLetterManagement from "./dashboard/ListLetterManagement";
 import CreateInvitation from "./dashboard/CreateInvitation";
-
+import ViewInvitation from "./dashboard/ViewInvitation";
 import Order from "./dashboard/Order";
 
 function App() {
@@ -95,21 +94,21 @@ function App() {
           }
         />
         <Route
-          path="/letter"
+          path="/create-letter/:id"
           element={
             <DashboardLayoutv2>
               <PrivateRoute>
-                <ListLetterManagement />
+                <CreateInvitation />
               </PrivateRoute>
             </DashboardLayoutv2>
           }
         />
         <Route
-          path="/createInvitation"
+          path="/preview-invitation/:id"
           element={
             <DashboardLayoutv2>
               <PrivateRoute>
-                <CreateInvitation />
+                <ViewInvitation/>
               </PrivateRoute>
             </DashboardLayoutv2>
           }
