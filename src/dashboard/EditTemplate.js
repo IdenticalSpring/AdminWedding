@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Box, Button, Snackbar, Alert } from "@mui/material";
+import { Box, Button, Snackbar, Alert, CircularProgress } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "./template-components/Canvas";
@@ -12,6 +12,7 @@ import {
 import Headerv2 from "./template-components/Headerv2";
 import LayerList from "./template-components/LayerList";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const EditTemplate = () => {
   const { id } = useParams(); // Lấy ID từ URL
@@ -22,6 +23,8 @@ const EditTemplate = () => {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const isPanning = useRef(false);
   const startPoint = useRef({ x: 0, y: 0 });
+  const [isLoading, setIsLoading] = useState(false); // State loading
+  const navigate = useNavigate();
   const [templateData, setTemplateData] = useState({
     name: "",
     description: "",
@@ -63,6 +66,8 @@ const EditTemplate = () => {
   };
 
   const handleSaveTemplate = async () => {
+    setIsLoading(true); // Bật loading
+
     try {
       // Cập nhật template
       const saveTemplate = await updateTemplate(
@@ -84,12 +89,15 @@ const EditTemplate = () => {
       console.log("Tempalte", saveTemplate);
 
       showSnackbar("Template updated successfully!", "success");
+      setTimeout(() => navigate("/template"), 1000); // Chuyển hướng sau 1s
     } catch (error) {
       console.error("Error saving template:", error);
       showSnackbar(
         error.response?.data?.message || "Failed to save template!",
         "error"
       );
+    } finally {
+      setIsLoading(false); // Tắt loading
     }
   };
 
@@ -289,10 +297,15 @@ const EditTemplate = () => {
           <Button
             variant="contained"
             color="primary"
+            disabled={isLoading}
             onClick={handleSaveTemplate}
             sx={{ padding: "10px 20px", borderRadius: "5px", fontSize: "16px" }}
           >
-            Save Template
+            {isLoading ? (
+              <CircularProgress size={24} color="white" />
+            ) : (
+              "Save Template"
+            )}
           </Button>
         </Box>
       </Box>

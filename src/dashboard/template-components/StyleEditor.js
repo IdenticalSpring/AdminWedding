@@ -124,21 +124,10 @@ const StyleEditor = ({
           sx={{ mb: 1 }}
         />
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
-          SelectID
+          Select Component ID
         </Typography>
         <DropdownMenu selectedItem={selectedItem} onChange={onChange} />
-        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
-          Height Section
-        </Typography>
-        <StyleInput
-          label="Height"
-          value={activeStyles.height}
-          onChange={(value) => handleStyleChange("height", value)}
-          type="number"
-          unit="px"
-          min={0}
-          max={1000}
-        />
+
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Font Size
         </Typography>
