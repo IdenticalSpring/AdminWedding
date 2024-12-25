@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useDrag, useDrop } from "react-dnd";
+import DropdownSelectResponsive from "./DropdownSelectResponsive"; // Import DropdownSelectResponsive
 
 const ItemType = "COMPONENT";
 
@@ -55,6 +56,7 @@ const LayerList = ({
   onUpdateSections,
 }) => {
   const [expandedSections, setExpandedSections] = React.useState({});
+  const [selectedSectionId, setSelectedSectionId] = React.useState("");
 
   // Toggle trạng thái mở/đóng của section
   const toggleSection = (sectionId) => {
@@ -80,6 +82,17 @@ const LayerList = ({
 
         return { ...section, components: updatedComponents };
       })
+    );
+  };
+
+  const handleDropdownChange = (sectionId, value) => {
+    setSelectedSectionId(sectionId);
+    console.log(`Selected section ${sectionId} with value ${value}`);
+    // Cập nhật giá trị responsive của section
+    onUpdateSections((prevSections) =>
+      prevSections.map((section) =>
+        section.id === sectionId ? { ...section, responsive: value } : section
+      )
     );
   };
 
@@ -119,6 +132,14 @@ const LayerList = ({
               />
               {expandedSections[section.id] ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
+
+            {/* DropdownSelectResponsive */}
+            <DropdownSelectResponsive
+              selectedItemSectionId={section.responsive || ""}
+              onChangeSection={(value) =>
+                handleDropdownChange(section.id, value)
+              }
+            />
 
             {/* Component List */}
             <Collapse

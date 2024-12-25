@@ -85,6 +85,7 @@ const CreateTemplate = () => {
       // Chuẩn bị dữ liệu sections với `position` dưới dạng chuỗi
       const sectionsWithMetadata = updatedSections.map((section) => ({
         templateId: templateID,
+        responsive: section.responsive,
         position: section.position, // Sử dụng chuỗi cho position
         metadata: {
           components: section.components,
@@ -105,8 +106,6 @@ const CreateTemplate = () => {
       showSnackbar(error.message || "Lưu thất bại!", "error");
     }
   };
-
-
 
   const handleStyleChange = (key, value) => {
     if (!activeItem) return;
@@ -173,14 +172,13 @@ const CreateTemplate = () => {
         backgroundColor: "#f9f9f9",
         transition: "border 0.3s ease",
       },
+      responsive: "", // Thêm field responsive
     };
 
     setSections((prevSections) => [...prevSections, newSection]);
 
     showSnackbar("New section added", "success");
   };
-
-
 
   const handleCanvasClick = (event) => {
     if (event.target.id === "canvas") {
@@ -209,7 +207,6 @@ const CreateTemplate = () => {
 
     setSections(updatedSections); // Cập nhật danh sách sections
   };
-
 
   const handleUpdateSections = (updatedSections) => {
     setSections(updatedSections);
