@@ -8,11 +8,13 @@ import {
   getTemplateById,
   updateTemplate,
   updateSection,
+  createSection,
 } from "../service/templateService";
 import Headerv2 from "./template-components/Headerv2";
 import LayerList from "./template-components/LayerList";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { v4 as uuidv4 } from "uuid";
 
 const EditTemplate = () => {
   const { id } = useParams(); // Lấy ID từ URL
@@ -175,27 +177,27 @@ const EditTemplate = () => {
     isPanning.current = false;
   }, []);
 
-  const addSection = () => {
-    const newSection = {
-      id: `${Date.now()}`,
-      position: String(sections.length + 1),
-      components: [],
-      style: {
-        width: "100%",
-        minWidth: "800px",
-        height: "100%",
-        padding: 2,
-        position: "relative",
-        marginBottom: 2,
-        minHeight: "500px",
-        backgroundColor: "#f9f9f9",
-        transition: "border 0.3s ease",
-      },
-    };
+  // const addSection = async () => {
+  //   const newSection = {
+  //     id: uuidv4(),
+  //     position: String(sections.length + 1),
+  //     components: [],
+  //     style: {
+  //       width: "100%",
+  //       minWidth: "800px",
+  //       height: "100%",
+  //       padding: 2,
+  //       position: "relative",
+  //       marginBottom: 2,
+  //       minHeight: "500px",
+  //       backgroundColor: "#f9f9f9",
+  //       transition: "border 0.3s ease",
+  //     },
+  //   };
 
-    setSections((prevSections) => [...prevSections, newSection]);
-    showSnackbar("New section added", "success");
-  };
+  //   setSections((prevSections) => [...prevSections, newSection]);
+  //   showSnackbar("New section added", "success");
+  // };
 
   const handleComponentClick = (component) => {
     setActiveItem(component);
@@ -286,14 +288,14 @@ const EditTemplate = () => {
             transform: "translateX(-50%)",
           }}
         >
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             onClick={addSection}
             sx={{ padding: "10px 20px", borderRadius: "5px", fontSize: "16px" }}
           >
             Add Section
-          </Button>
+          </Button> */}
           <Button
             variant="contained"
             color="primary"
