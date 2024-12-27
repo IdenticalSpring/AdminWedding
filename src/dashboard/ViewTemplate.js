@@ -45,6 +45,11 @@ const ViewTemplate = () => {
               height: component.style.height,
               color: component.style.color,
               backgroundColor: component.style.fillColor,
+              "@media (max-width: 700px)": {
+                fontSize: "14px",
+                width: "90%",
+                left: "5%",
+              },
             }}
           >
             <Typography variant={component.style.fontSize}>
@@ -64,24 +69,22 @@ const ViewTemplate = () => {
               height: component.style.height,
               borderRadius: "50%",
               backgroundColor: component.style.fillColor,
-              borderColor: component.style.borderColor || "",
-              borderWidth: component.style.borderWidth || "0px",
-              borderColor: component.style.borderColor || "",
-              borderStyle: component.style.borderStyle || "none",
               opacity: component.style.opacity / 100 || "1",
+              "@media (max-width: 700px)": {
+                width: "60%",
+                height: "auto",
+                left: "20%",
+              },
             }}
           >
             <img
               src={component.src}
               alt="image component"
               style={{
-                width: component.style.width,
-                height: component.style.height,
+                width: "100%",
+                height: "100%",
                 objectFit: "cover",
-                borderRadius:
-                  component.type === "circle"
-                    ? "50%"
-                    : component.style.borderRadius,
+                borderRadius: "50%",
               }}
             />
           </Box>
@@ -96,13 +99,13 @@ const ViewTemplate = () => {
               top: component.style.top,
               width: component.style.width,
               height: component.style.height,
-              backgroundColor: component.style.fillColor || "#ccc", // Default color if not provided
+              backgroundColor: component.style.fillColor || "#ccc",
               borderRadius: component.style.borderRadius || "0%",
-              borderColor: component.style.borderColor || "",
-              borderWidth: component.style.borderWidth || "0px",
-              borderColor: component.style.borderColor || "",
-              borderStyle: component.style.borderStyle || "none",
               opacity: component.style.opacity / 100 || "1",
+              "@media (max-width: 700px)": {
+                width: "90%",
+                left: "5%",
+              },
             }}
           />
         );
@@ -118,25 +121,24 @@ const ViewTemplate = () => {
               height: component.style.height,
               overflow: "hidden",
               borderRadius: component.style.borderRadius || "0%",
-              borderColor: component.style.borderColor || "",
-              borderWidth: component.style.borderWidth || "0px",
-              borderColor: component.style.borderColor || "",
-              borderStyle: component.style.borderStyle || "none",
               opacity: component.style.opacity / 100 || "1",
+              "@media (max-width: 700px)": {
+                width: "100%",
+                height: "auto",
+              },
             }}
           >
             <img
               src={component.src}
               alt="image component"
               style={{
-                width: component.style.width,
-                height: component.style.height,
-                objectFit: "cover", // Adjust image to fit box
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
               }}
             />
           </Box>
         );
-      // Handle line case
       case "line":
         return (
           <Box
@@ -145,14 +147,17 @@ const ViewTemplate = () => {
               position: "absolute",
               left: component.style.left,
               top: component.style.top,
-              width: component.style.width, // Width of the line
-              height: component.style.height || 5, // Line height, default to 1px if not specified
-              backgroundColor: component.style.lineColor, // Line color
-              opacity: component.style.opacity / 100 || 1, // Set opacity
+              width: component.style.width,
+              height: component.style.height || 5,
+              backgroundColor: component.style.lineColor,
+              opacity: component.style.opacity / 100 || 1,
+              "@media (max-width: 700px)": {
+                width: "90%",
+                left: "5%",
+              },
             }}
           />
         );
-
       default:
         return null;
     }
@@ -189,8 +194,24 @@ const ViewTemplate = () => {
   }
 
   return (
-    <Box sx={{ padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
+    <Box
+      sx={{
+        padding: 2,
+        "@media (max-width: 700px)": {
+          padding: 1,
+        },
+      }}
+    >
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          textAlign: "center",
+          "@media (max-width: 700px)": {
+            fontSize: "20px",
+          },
+        }}
+      >
         View Template: {template.name || "Untitled"}
       </Typography>
       <Grid container spacing={2}>
@@ -200,10 +221,6 @@ const ViewTemplate = () => {
             {template.description || "No description provided."}
           </Typography>
         </Grid>
-        {/* <Grid item xs={12}>
-            <Typography variant="h6">Metadata</Typography>
-            <Typography>{template.metaData}</Typography>
-          </Grid> */}
         <Grid item xs={12}>
           <Typography variant="h6">Sections</Typography>
           {template.sections && template.sections.length > 0 ? (
@@ -220,6 +237,12 @@ const ViewTemplate = () => {
                     marginBottom: section.metadata?.style.marginBottom,
                     width: section.metadata?.style.minWidth,
                     backgroundColor: section.metadata?.style.backgroundColor,
+                    "@media (max-width: 700px)": {
+                      padding: "10px",
+                      width: "100%",
+                      height: "auto",
+                      marginBottom: "10px",
+                    },
                   }}
                 >
                   {/* Render the components inside the section */}
@@ -232,7 +255,15 @@ const ViewTemplate = () => {
         </Grid>
       </Grid>
       <Box sx={{ marginTop: 2 }}>
-        <Button variant="contained" onClick={handleBack}>
+        <Button
+          variant="contained"
+          onClick={handleBack}
+          sx={{
+            "@media (max-width: 700px)": {
+              width: "100%",
+            },
+          }}
+        >
           Back to Template Management
         </Button>
       </Box>
