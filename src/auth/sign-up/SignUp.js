@@ -97,7 +97,7 @@ const SignUp = (props) => {
         message:
           "Đăng ký thành công! Vui lòng kiểm tra email của bạn để kích hoạt tài khoản.",
       });
-      setTimeout(() => navigate("/sign-in"), 2000); // Điều hướng sau khi đăng ký thành công
+      setTimeout(() => navigate("/"), 2000); // Điều hướng sau khi đăng ký thành công
     } catch (error) {
       const errorMessage =
         error.message || "Đăng ký thất bại. Vui lòng thử lại.";

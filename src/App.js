@@ -108,7 +108,7 @@ function App() {
           element={
             <DashboardLayoutv2>
               <PrivateRoute>
-                <ViewInvitation/>
+                <ViewInvitation />
               </PrivateRoute>
             </DashboardLayoutv2>
           }

@@ -169,98 +169,100 @@ const SubscriptionPlans = () => {
 
   return (
     <>
-      <Header />
-      <Box sx={{ padding: 2 }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            marginBottom: 2,
-          }}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={openAddDialog}
+      <Box style={{ padding: "0 30px" }}>
+        <Header />
+        <Box sx={{ padding: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: 2,
+            }}
           >
-            Add New Plan
-          </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={openAddDialog}
+            >
+              Add New Plan
+            </Button>
+          </Box>
+          <Box sx={{ height: 500 }}>
+            <DataGrid
+              rows={plans}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5, 10, 20]}
+              disableSelectionOnClick
+            />
+          </Box>
         </Box>
-        <Box sx={{ height: 500 }}>
-          <DataGrid
-            rows={plans}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            disableSelectionOnClick
-          />
-        </Box>
+        {/* Delete Confirmation Dialog */}
+        <Dialog
+          open={deleteDialogOpen}
+          onClose={() => setDeleteDialogOpen(false)}
+        >
+          <DialogTitle>
+            Are you sure you want to delete this subscription plan?
+          </DialogTitle>
+          <DialogActions>
+            <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+            <Button color="error" onClick={handleDelete}>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+          <DialogTitle>
+            {dialogMode === "add"
+              ? "Add New Subscription Plan"
+              : "Edit Subscription Plan"}
+          </DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="dense"
+              label="Name"
+              name="name"
+              value={editForm.name}
+              onChange={handleEditChange}
+              fullWidth
+            />
+            <TextField
+              margin="dense"
+              label="Description"
+              name="description"
+              value={editForm.description}
+              onChange={handleEditChange}
+              fullWidth
+            />
+            <TextField
+              margin="dense"
+              label="Price"
+              name="price"
+              type="number"
+              value={editForm.price}
+              onChange={handleEditChange}
+              fullWidth
+            />
+            <TextField
+              margin="dense"
+              label="Duration (months)"
+              name="duration"
+              type="number"
+              value={editForm.duration}
+              onChange={handleEditChange}
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleEditSubmit} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-      >
-        <DialogTitle>
-          Are you sure you want to delete this subscription plan?
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button color="error" onClick={handleDelete}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle>
-          {dialogMode === "add"
-            ? "Add New Subscription Plan"
-            : "Edit Subscription Plan"}
-        </DialogTitle>
-        <DialogContent>
-          <TextField
-            margin="dense"
-            label="Name"
-            name="name"
-            value={editForm.name}
-            onChange={handleEditChange}
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            label="Description"
-            name="description"
-            value={editForm.description}
-            onChange={handleEditChange}
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            label="Price"
-            name="price"
-            type="number"
-            value={editForm.price}
-            onChange={handleEditChange}
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            label="Duration (months)"
-            name="duration"
-            type="number"
-            value={editForm.duration}
-            onChange={handleEditChange}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleEditSubmit} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };
