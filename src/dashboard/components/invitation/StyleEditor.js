@@ -125,18 +125,6 @@ const StyleEditor = ({
         />
 
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
-          Height Section
-        </Typography>
-        <StyleInput
-          label="Height"
-          value={activeStyles.height}
-          onChange={(value) => handleStyleChange("height", value)}
-          type="number"
-          unit="px"
-          min={0}
-          max={1000}
-        />
-        <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Font Size
         </Typography>
         <StyleInput

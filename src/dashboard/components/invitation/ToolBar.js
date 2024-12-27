@@ -126,11 +126,7 @@ const Toolbar = ({
               <Box>
                 <Button variant="contained" component="label">
                   Upload Image
-                  <Input
-                    type="file"
-                    onChange={handleFileUpload}
-                    hidden
-                  />
+                  <Input type="file" onChange={handleFileUpload} hidden />
                 </Button>
               </Box>
             )}
