@@ -7,6 +7,8 @@ const DropdownMenu = ({ selectedItem, onChange }) => {
     { label: "Header (section)", value: "header_section" },
     { label: "Tên cô dâu", value: "ten_co_dau" },
     { label: "Tên chú rể", value: "ten_chu_re" },
+    { label: "Tên Khách", value: "ten_khach" },
+    { label: "Quan hệ", value: "quan_he" },
     { label: "Cuộc hành trình (section)", value: "cuoc_hanh_trinh" },
     { label: "Số ngày yêu nhau", value: "so_ngay_yeu_nhau" },
     { label: "Xác nhận tham gia", value: "xac_nhan_tham_gia" },

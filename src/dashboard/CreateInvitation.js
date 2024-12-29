@@ -3,7 +3,7 @@ import { Box, Button, Snackbar, Alert } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "../dashboard/components/invitation/Canvas";
-import Toolbar from "../dashboard/components/invitation/ToolBar";
+import Toolbar from "./components/invitation/Toolbar";
 import Headerv2 from "../dashboard/components/invitation/Headerv2";
 import { useParams } from "react-router-dom";
 import LayerList from "../dashboard/components/invitation/LayerList";
@@ -23,6 +23,7 @@ const CreateInvitation = () => {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const isPanning = useRef(false);
   const startPoint = useRef({ x: 0, y: 0 });
+  const [selectedItem, setSelectedItem] = useState("");
   const [invitationData, setInvitationData] = useState({
     title: "",
     templateId: id,
@@ -59,6 +60,38 @@ const CreateInvitation = () => {
       const delta = event.deltaY > 0 ? -0.1 : 0.1;
       return Math.min(Math.max(prevScale + delta, 0.5), 3);
     });
+  };
+  const handleDropdownChange = (value) => {
+    setSelectedItem(value);
+    if (activeItem) {
+      // Cập nhật ID của component hiện tại khi chọn một item
+      setSections((prevSections) =>
+        prevSections.map((section) =>
+          section.id === activeItem.sectionId
+            ? {
+              ...section,
+              components: section.components.map((component) => {
+                if (component.id === activeItem.componentId) {
+                  // Lấy ID hiện tại
+                  let currentId = component.id;
+
+                  // Xóa ký tự cuối cho đến khi gặp số
+                  while (currentId && isNaN(Number(currentId.slice(-1)))) {
+                    currentId = currentId.slice(0, -1);
+                  }
+
+                  // Thêm giá trị mới vào đuôi ID
+                  const updatedId = `${currentId}-${value}`;
+
+                  return { ...component, id: updatedId };
+                }
+                return component;
+              }),
+            }
+            : section
+        )
+      );
+    }
   };
 
   const fetchInvitationData = async () => {
@@ -126,8 +159,8 @@ const CreateInvitation = () => {
     components: [],
     style: {
       width: "100%",
-      minWidth: "800px",
-      minHeight: "500px",
+      minWidth: "500px",
+      minHeight: "800px",
       padding: "10px",
       backgroundColor: "#f9f9f9",
       border: "1px solid #ddd",
@@ -335,6 +368,7 @@ const CreateInvitation = () => {
               setActiveItem((prev) => ({ ...prev, text: value }));
             }}
             handleFileUpload={handleFileUpload}
+            onDropdownChange={handleDropdownChange}
           />
         </Box>
         <Box
