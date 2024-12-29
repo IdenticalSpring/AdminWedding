@@ -18,7 +18,8 @@ const Toolbar = ({
   updateSections,
   selectedComponent, // Current selected component
   handleTextChange, // Function to update text content
-  handleFileUpload, // Function to handle image uploads
+  handleFileUpload,
+  onDropdownChange,// Function to handle image uploads
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -90,6 +91,8 @@ const Toolbar = ({
             <StyleEditor
               activeStyles={activeStyles}
               handleStyleChange={handleStyleChange}
+              selectedItem={selectedComponent?.id || ""} 
+              onChange={onDropdownChange}
             />
           </Box>
         )}
