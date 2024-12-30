@@ -208,6 +208,7 @@ const EditTemplate = () => {
     <DndProvider backend={HTML5Backend}>
       <Box
         sx={{
+          width: "100%",
           display: "flex",
           flexDirection: "column",
           height: "100vh",
@@ -216,11 +217,11 @@ const EditTemplate = () => {
       >
         <Box
           sx={{
-            position: "fixed",
+            position: "absolute",
             top: 0,
             width: "87%",
             zIndex: 1000,
-            backgroundColor: "#FCFCFC",
+            pr: "12px",
           }}
         >
           <Headerv2 />

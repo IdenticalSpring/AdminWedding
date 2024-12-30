@@ -3,7 +3,7 @@ import { Box, Button, Snackbar, Alert } from "@mui/material";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "../dashboard/components/invitation/Canvas";
-import Toolbar from "./components/invitation/Toolbar";
+import Toolbar from "./components/invitation/ToolBar";
 import Headerv2 from "../dashboard/components/invitation/Headerv2";
 import { useParams } from "react-router-dom";
 import LayerList from "../dashboard/components/invitation/LayerList";
@@ -69,25 +69,25 @@ const CreateInvitation = () => {
         prevSections.map((section) =>
           section.id === activeItem.sectionId
             ? {
-              ...section,
-              components: section.components.map((component) => {
-                if (component.id === activeItem.componentId) {
-                  // Lấy ID hiện tại
-                  let currentId = component.id;
+                ...section,
+                components: section.components.map((component) => {
+                  if (component.id === activeItem.componentId) {
+                    // Lấy ID hiện tại
+                    let currentId = component.id;
 
-                  // Xóa ký tự cuối cho đến khi gặp số
-                  while (currentId && isNaN(Number(currentId.slice(-1)))) {
-                    currentId = currentId.slice(0, -1);
+                    // Xóa ký tự cuối cho đến khi gặp số
+                    while (currentId && isNaN(Number(currentId.slice(-1)))) {
+                      currentId = currentId.slice(0, -1);
+                    }
+
+                    // Thêm giá trị mới vào đuôi ID
+                    const updatedId = `${currentId}-${value}`;
+
+                    return { ...component, id: updatedId };
                   }
-
-                  // Thêm giá trị mới vào đuôi ID
-                  const updatedId = `${currentId}-${value}`;
-
-                  return { ...component, id: updatedId };
-                }
-                return component;
-              }),
-            }
+                  return component;
+                }),
+              }
             : section
         )
       );
@@ -311,7 +311,7 @@ const CreateInvitation = () => {
       >
         <Box
           sx={{
-            position: "fixed",
+            position: "absolute",
             top: 0,
             width: "87%",
             zIndex: 1000,
