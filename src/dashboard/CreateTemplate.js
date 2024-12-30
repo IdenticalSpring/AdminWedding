@@ -230,9 +230,9 @@ const CreateTemplate = () => {
       >
         <Box
           sx={{
-            position: "fixed",
+            position: "absolute",
             top: 0,
-            width: "87%",
+            minWidth: "2000px",
             zIndex: 1000,
             backgroundColor: "#FCFCFC",
           }}
