@@ -30,6 +30,11 @@ const ViewTemplate = () => {
 
   // Function to render components dynamically based on metadata
   const renderComponent = (component) => {
+    const isResponsive = window.innerWidth <= 700; // Kiểm tra nếu màn hình nhỏ hơn hoặc bằng 700px
+    const style = isResponsive
+      ? component.responsiveStyle || component.style
+      : component.style;
+
     switch (component.type) {
       case "text":
         return (
@@ -37,22 +42,25 @@ const ViewTemplate = () => {
             key={component.id}
             sx={{
               position: "absolute",
-              left: component.style.left,
-              top: component.style.top,
-              fontSize: component.style.fontSize,
-              fontFamily: component.style.fontFamily,
-              width: component.style.width,
-              height: component.style.height,
-              color: component.style.color,
-              backgroundColor: component.style.fillColor,
+              left: style.left,
+              top: style.top,
+              fontSize: style.fontSize,
+              fontFamily: style.fontFamily,
+              width: style.width,
+              height: style.height,
+              color: style.color,
+              backgroundColor: style.fillColor,
               "@media (max-width: 700px)": {
-                fontSize: "14px",
-                width: "90%",
-                left: "5%",
+                position: "absolute",
+                left: style.left,
+                top: style.top,
+                width: "60vw",
+                fontSize: "20px",
+                marginBottom: "10px",
               },
             }}
           >
-            <Typography variant={component.style.fontSize}>
+            <Typography variant={style.fontSize}>
               {component.text || "No text provided"}
             </Typography>
           </Box>
@@ -63,17 +71,20 @@ const ViewTemplate = () => {
             key={component.id}
             sx={{
               position: "absolute",
-              left: component.style.left,
-              top: component.style.top,
+              left: style.left,
+              top: style.top,
               width: component.style.width,
               height: component.style.height,
               borderRadius: "50%",
-              backgroundColor: component.style.fillColor,
-              opacity: component.style.opacity / 100 || "1",
+              backgroundColor: style.fillColor,
+              opacity: style.opacity / 100 || "1",
               "@media (max-width: 700px)": {
-                width: "60%",
-                height: "auto",
-                left: "20%",
+                position: "absolute",
+                left: style.left,
+                top: style.top,
+                width: "30vw",
+                height: "20vh",
+                margin: "0 auto 10px auto",
               },
             }}
           >
@@ -81,8 +92,8 @@ const ViewTemplate = () => {
               src={component.src}
               alt="image component"
               style={{
-                width: "100%",
-                height: "100%",
+                width: component.style.width,
+                height: component.style.height,
                 objectFit: "cover",
                 borderRadius: "50%",
               }}
@@ -95,16 +106,20 @@ const ViewTemplate = () => {
             key={component.id}
             sx={{
               position: "absolute",
-              left: component.style.left,
-              top: component.style.top,
-              width: component.style.width,
-              height: component.style.height,
-              backgroundColor: component.style.fillColor || "#ccc",
-              borderRadius: component.style.borderRadius || "0%",
-              opacity: component.style.opacity / 100 || "1",
+              left: style.left,
+              top: style.top,
+              width: style.width,
+              height: style.height,
+              backgroundColor: style.fillColor || "#ccc",
+              borderRadius: style.borderRadius || "0%",
+              opacity: style.opacity / 100 || "1",
               "@media (max-width: 700px)": {
-                width: "90%",
-                left: "5%",
+                position: "absolute",
+                left: style.left,
+                top: style.top,
+                width: "30vw",
+                height: "20vh",
+                marginBottom: "10px",
               },
             }}
           />
@@ -115,16 +130,20 @@ const ViewTemplate = () => {
             key={component.id}
             sx={{
               position: "absolute",
-              left: component.style.left,
-              top: component.style.top,
-              width: component.style.width,
-              height: component.style.height,
+              left: style.left,
+              top: style.top,
+              width: style.width,
+              height: style.height,
               overflow: "hidden",
-              borderRadius: component.style.borderRadius || "0%",
-              opacity: component.style.opacity / 100 || "1",
+              borderRadius: style.borderRadius || "0%",
+              opacity: style.opacity / 100 || "1",
               "@media (max-width: 700px)": {
-                width: "100%",
-                height: "auto",
+                position: "absolute",
+                left: style.left,
+                top: style.top,
+                width: "100vw",
+                height: "50vh",
+                marginBottom: "10px",
               },
             }}
           >
@@ -145,15 +164,19 @@ const ViewTemplate = () => {
             key={component.id}
             sx={{
               position: "absolute",
-              left: component.style.left,
-              top: component.style.top,
-              width: component.style.width,
-              height: component.style.height || 5,
-              backgroundColor: component.style.lineColor,
-              opacity: component.style.opacity / 100 || 1,
+              left: style.left,
+              top: style.top,
+              width: style.width,
+              height: style.height || 5,
+              backgroundColor: style.lineColor,
+              opacity: style.opacity / 100 || 1,
               "@media (max-width: 700px)": {
-                width: "90%",
-                left: "5%",
+                position: "absolute",
+                left: style.left,
+                top: style.top,
+                width: "60vw",
+                height: "50vh",
+                marginBottom: "10px",
               },
             }}
           />
@@ -238,10 +261,12 @@ const ViewTemplate = () => {
                     width: section.metadata?.style.minWidth,
                     backgroundColor: section.metadata?.style.backgroundColor,
                     "@media (max-width: 700px)": {
+                      position: "relative",
                       padding: "10px",
-                      width: "100%",
-                      height: "auto",
+                      width: "100vw",
+                      height: "50vh",
                       marginBottom: "10px",
+                      overflow: "hidden",
                     },
                   }}
                 >

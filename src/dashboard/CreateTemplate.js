@@ -170,7 +170,7 @@ const CreateTemplate = () => {
         width: "100%",
         minWidth: "800px",
         height: "100%",
-        padding: 2,
+        padding: 0,
         position: "relative",
         marginBottom: 2,
         minHeight: "500px",
