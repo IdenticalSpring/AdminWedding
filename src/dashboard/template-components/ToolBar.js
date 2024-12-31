@@ -71,9 +71,7 @@ const Toolbar = ({
         backgroundColor: "#f9f9f9",
         display: "flex",
         flexDirection: "column",
-        height: "calc(100vh - 53px)",
         borderLeft: "1px solid #ddd",
-        marginTop: "53px",
         zIndex: 1,
       }}
     >
