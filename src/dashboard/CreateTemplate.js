@@ -227,23 +227,31 @@ const CreateTemplate = () => {
         }}
         onClick={handleCanvasClick}
       >
-        <Box
+        {/* <Box
           sx={{
             position: "absolute",
             top: 0,
-            minWidth: "2000px",
+            width: "100%",
             zIndex: 1000,
             backgroundColor: "#FCFCFC",
+            boxSizing: "border-box",
           }}
         >
           <Headerv2 />
-        </Box>
+        </Box> */}
+        <Headerv2
+          sx={{
+            position: "absolute !important",
+            top: 0,
+            zIndex: 1000,
+          }}
+        />
         <Box
           sx={{
             display: "flex",
             height: "100%",
             overflow: "hidden",
-            flexDirection: "row", // Đảm bảo "row" để các phần tử nằm cạnh nhau
+            flexDirection: "row",
           }}
         >
           <LayerList
