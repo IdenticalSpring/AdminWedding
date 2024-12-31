@@ -17,7 +17,7 @@ export default function Headerv2() {
         width: "100%",
         alignItems: { xs: "flex-start", md: "center" },
         justifyContent: "flex-end",
-        maxWidth: { sm: "100%", md: "1700px" },
+        maxWidth: { sm: "100%", md: "100%", lg: "100%" },
         pt: 1,
         borderBottom: "1px solid #ddd",
         pb: 1,

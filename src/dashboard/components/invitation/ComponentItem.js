@@ -192,7 +192,6 @@ const ComponentItem = ({
               variant="outlined"
               value={newText}
               onChange={(e) => setNewText(e.target.value)}
-              rows={4}
             />
           </DialogContent>
           <DialogActions>
