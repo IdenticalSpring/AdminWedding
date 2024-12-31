@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Checkbox,
@@ -10,6 +10,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import DropdownMenu from "./DropdownId";
+import fonts from "../../utils/fonts";
 
 const StyleInput = ({
   label,
@@ -38,10 +39,7 @@ const StyleInput = ({
             </MenuItem>
           ))}
         </TextField>
-      ) : // : type === "dropdown" ? (
-      //   <DropdownMenu selectedItem={value} onChange={onChange} />
-      // )
-      type === "number" ? (
+      ) : type === "number" ? (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <TextField
             value={value || ""}
@@ -83,6 +81,27 @@ const StyleEditor = ({
   selectedItem,
   onChange,
 }) => {
+  const loadFont = (url) => {
+    if (!document.querySelector(`link[href="${url}"]`)) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = url;
+      document.head.appendChild(link);
+    }
+  };
+
+  // Load the font if a font family is selected
+  useEffect(() => {
+    if (activeStyles.fontFamily) {
+      const selectedFont = fonts.find(
+        (font) => font.family === activeStyles.fontFamily
+      );
+      if (selectedFont) {
+        loadFont(selectedFont.url);
+      }
+    }
+  }, [activeStyles.fontFamily]);
+
   if (!activeStyles || Object.keys(activeStyles).length === 0) return null;
 
   return (
@@ -148,13 +167,7 @@ const StyleEditor = ({
           value={activeStyles.fontFamily}
           onChange={(value) => handleStyleChange("fontFamily", value)}
           type="select"
-          options={[
-            "Arial",
-            "Courier New",
-            "Georgia",
-            "Times New Roman",
-            "Verdana",
-          ]}
+          options={fonts.map((font) => font.family)}
         />
 
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>

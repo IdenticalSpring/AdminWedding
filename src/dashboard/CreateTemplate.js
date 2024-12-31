@@ -128,7 +128,6 @@ const CreateTemplate = () => {
                     }
                   : component
               ),
-              style: { ...section.style, [key]: value },
             }
           : section
       )
