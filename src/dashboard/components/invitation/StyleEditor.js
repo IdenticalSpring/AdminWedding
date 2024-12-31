@@ -126,11 +126,7 @@ const StyleEditor = ({
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Select Component ID
         </Typography>
-        <DropdownMenu
-          selectedItem={selectedItem}
-          onChange={onChange}
-        />
-
+        <DropdownMenu selectedItem={selectedItem} onChange={onChange} />
 
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Font Size
@@ -158,6 +154,7 @@ const StyleEditor = ({
             "Georgia",
             "Times New Roman",
             "Verdana",
+            "phuc",
           ]}
         />
 
