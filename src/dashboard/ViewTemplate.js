@@ -132,7 +132,7 @@ const ViewTemplate = () => {
               <Box
                 sx={{ width: "800px", height: "600px", position: "relative" }}
               >
-                <Canvas sections={sections} />
+                <Canvas sections={sections} isViewMode={true} />
               </Box>
             </Box>
           </Box>
