@@ -92,7 +92,7 @@ const StyleEditor = ({
 
   // Load the font if a font family is selected
   useEffect(() => {
-    if (activeStyles.fontFamily) {
+    if (activeStyles?.fontFamily) {
       const selectedFont = fonts.find(
         (font) => font.family === activeStyles.fontFamily
       );
@@ -100,7 +100,7 @@ const StyleEditor = ({
         loadFont(selectedFont.url);
       }
     }
-  }, [activeStyles.fontFamily]);
+  }, [activeStyles?.fontFamily]);
 
   if (!activeStyles || Object.keys(activeStyles).length === 0) return null;
 
