@@ -161,7 +161,6 @@ const CreateInvitation = () => {
       width: "100%",
       minWidth: "500px",
       minHeight: "800px",
-      padding: "10px",
       backgroundColor: "#f9f9f9",
       border: "1px solid #ddd",
       position: "relative",
@@ -304,23 +303,27 @@ const CreateInvitation = () => {
       <Box
         sx={{
           display: "flex",
+          width: "100%",
           flexDirection: "column",
           height: "100vh",
           backgroundColor: "#FCFCFC",
         }}
       >
+        <Headerv2
+          sx={{
+            position: "absolute !important",
+            top: 0,
+            zIndex: 1000,
+          }}
+        />
         <Box
           sx={{
-            position: "absolute",
-            top: 0,
-            width: "87%",
-            zIndex: 1000,
-            backgroundColor: "#FCFCFC",
+            display: "flex",
+            height: "100%",
+            overflow: "hidden",
+            flexDirection: "row",
           }}
         >
-          <Headerv2 />
-        </Box>
-        <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
           <LayerList sections={sections} onUpdateSections={setSections} />
           <Box
             id="canvas"

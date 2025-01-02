@@ -154,7 +154,6 @@ const StyleEditor = ({
             "Georgia",
             "Times New Roman",
             "Verdana",
-            "phuc",
           ]}
         />
 
@@ -189,6 +188,7 @@ const StyleEditor = ({
           type="number"
           unit="px"
           min={0}
+          step={1}
           max={1000}
         />
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
