@@ -21,6 +21,7 @@ const ComponentItem = ({
   active,
   onDrag,
   setGuides,
+  isViewMode,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -100,6 +101,7 @@ const ComponentItem = ({
         height: component.style.height,
       }}
       onStop={handleDragStop}
+      disabled={isViewMode}
     >
       <Box
         sx={{
@@ -119,7 +121,7 @@ const ComponentItem = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          cursor: "move",
+          cursor: isViewMode ? "default" : "move",
           padding: 1,
           transition: component.type === "diamond" ? "" : "border 0.3s ease",
           borderRadius:
