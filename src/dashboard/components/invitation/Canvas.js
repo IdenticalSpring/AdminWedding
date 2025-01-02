@@ -13,13 +13,10 @@ const Canvas = ({
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "80px 20px 60px 20px",
-        minHeight: "100vh",
-        backgroundColor: "#FCFCFC",
-        overflow: "auto"
+        border: "1px solid #ddd",
+        // padding: 2,
+        minHeight: "80vh",
+        backgroundColor: "#fff",
       }}
     >
       <Box

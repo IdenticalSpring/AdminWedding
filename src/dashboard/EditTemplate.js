@@ -215,18 +215,21 @@ const EditTemplate = () => {
           backgroundColor: "#FCFCFC",
         }}
       >
+        <Headerv2
+          sx={{
+            position: "absolute !important",
+            top: 0,
+            zIndex: 1000,
+          }}
+        />
         <Box
           sx={{
-            position: "absolute",
-            top: 0,
-            width: "87%",
-            zIndex: 1000,
-            pr: "12px",
+            display: "flex",
+            height: "100%",
+            overflow: "hidden",
+            flexDirection: "row",
           }}
         >
-          <Headerv2 />
-        </Box>
-        <Box sx={{ display: "flex", height: "100%", overflow: "hidden" }}>
           <LayerList sections={sections} onUpdateSections={setSections} />
           <Box
             id="canvas"
