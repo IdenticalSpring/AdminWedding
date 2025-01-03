@@ -96,8 +96,6 @@ const ComponentItem = ({
       defaultPosition={{
         x: component.style.left,
         y: component.style.top,
-        width: component.style.width,
-        height: component.style.height,
       }}
       onStop={handleDragStop}
     >
