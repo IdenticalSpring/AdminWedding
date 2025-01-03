@@ -97,6 +97,7 @@ const CreateInvitation = () => {
   const fetchInvitationData = async () => {
     try {
       const response = await getTemplateById(id);
+      console.log("Template data:", response?.data.invitation);
       if (response?.data) {
         const data = response.data;
 
@@ -158,7 +159,6 @@ const CreateInvitation = () => {
     position: "1",
     components: [],
     style: {
-      width: "100%",
       minWidth: "500px",
       minHeight: "800px",
       backgroundColor: "#f9f9f9",
@@ -304,8 +304,8 @@ const CreateInvitation = () => {
         sx={{
           display: "flex",
           width: "100%",
-          flexDirection: "column",
-          height: "100vh",
+          height: "100%",
+          flexDirection: "column",   
           backgroundColor: "#FCFCFC",
         }}
       >
@@ -319,7 +319,6 @@ const CreateInvitation = () => {
         <Box
           sx={{
             display: "flex",
-            height: "100%",
             overflow: "hidden",
             flexDirection: "row",
           }}
@@ -341,8 +340,6 @@ const CreateInvitation = () => {
           >
             <Box
               sx={{
-                width: "100%",
-                height: "100%",
                 transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`,
                 transformOrigin: "center",
                 transition: isPanning.current

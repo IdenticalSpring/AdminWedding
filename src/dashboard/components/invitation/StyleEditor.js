@@ -10,7 +10,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import DropdownMenu from "./DropdownId";
-
+import fonts from "../../../utils/fonts";
 const StyleInput = ({
   label,
   value,
@@ -148,14 +148,9 @@ const StyleEditor = ({
           value={activeStyles.fontFamily}
           onChange={(value) => handleStyleChange("fontFamily", value)}
           type="select"
-          options={[
-            "Arial",
-            "Courier New",
-            "Georgia",
-            "Times New Roman",
-            "Verdana",
-          ]}
+          options={fonts.map((font) => font.family)}
         />
+
 
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Color

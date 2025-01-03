@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
-import { Box, Typography, Snackbar, Alert } from "@mui/material";
+import { Box, Typography, Snackbar, Alert, CircularProgress } from "@mui/material";
 import { getTemplateById } from "../service/templateService";
 
 const ViewInvitation = () => {
-    const { id } = useParams(); 
+    const { id } = useParams();
     const [invitation, setInvitation] = useState(null);
     const [sections, setSections] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -25,6 +24,7 @@ const ViewInvitation = () => {
                     setInvitation(data.invitation);
                     const processedSections = processMetadataToSections(data.invitation.metadata);
                     setSections(processedSections);
+                    console.log(processedSections);
                 } else if (data.section_user && data.section_user.length > 0) {
                     const processedSections = processSectionUserToSections(data.section_user);
                     setSections(processedSections);
@@ -56,15 +56,23 @@ const ViewInvitation = () => {
                             position: "absolute",
                             left: component.style.left,
                             top: component.style.top,
-                            fontSize: component.style.fontSize,
-                            fontFamily: component.style.fontFamily || "Arial",
                             width: component.style.width,
                             height: component.style.height,
                             color: component.style.color || "#000",
                             backgroundColor: component.style.fillColor || "transparent",
+                            boxSizing: "border-box",
                         }}
                     >
-                        <Typography variant="body1" sx={{ wordWrap: "break-word" }}>
+                        <Typography
+                            variant="body1"
+                            sx={{
+                                fontSize: component.style.fontSize || "16px",
+                                fontFamily: component.style.fontFamily || "inherit",
+                                wordWrap: "break-word",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
                             {component.text || "Sample Text"}
                         </Typography>
                     </Box>
@@ -82,6 +90,7 @@ const ViewInvitation = () => {
                             backgroundColor: component.style.fillColor || "#000",
                             borderRadius: "50%",
                             border: component.style.border || "none",
+                            boxSizing: "border-box",
                         }}
                     />
                 );
@@ -99,6 +108,7 @@ const ViewInvitation = () => {
                             alignItems: "center",
                             justifyContent: "center",
                             backgroundColor: component.style.fillColor || "transparent",
+                            boxSizing: "border-box",
                         }}
                     >
                         {component.src ? (
@@ -123,7 +133,6 @@ const ViewInvitation = () => {
         }
     };
 
-
     if (loading) {
         return (
             <Box
@@ -134,7 +143,10 @@ const ViewInvitation = () => {
                     height: "100vh",
                 }}
             >
-                <Typography variant="h6">Đang tải dữ liệu...</Typography>
+                <CircularProgress />
+                <Typography variant="h6" sx={{ marginLeft: 2 }}>
+                    Đang tải dữ liệu...
+                </Typography>
             </Box>
         );
     }
@@ -161,7 +173,9 @@ const ViewInvitation = () => {
                     <Typography variant="h4" gutterBottom>
                         {invitation.title || "Untitled Invitation"}
                     </Typography>
-                  
+                    <Typography variant="body1" gutterBottom>
+                        {invitation.description || "No description provided."}
+                    </Typography>
                 </>
             )}
             <Box
@@ -178,9 +192,12 @@ const ViewInvitation = () => {
                             position: "relative",
                             border: "1px solid #ccc",
                             padding: 2,
-                            minHeight: section.style?.minHeight,
-                            minWidth: section.style?.minWidth,
-                            backgroundColor: section.style?.backgroundColor,
+                            minHeight: section.style?.minHeight || "auto",
+                            minWidth: section.style?.minWidth || "auto",
+                            backgroundColor: section.style?.backgroundColor || "#fff",
+                            boxSizing: "border-box",
+                            marginBottom: 4,
+                            fontFamily: section.style?.fontFamily || "inherit",
                         }}
                     >
                         {section.components.map(renderComponent)}
