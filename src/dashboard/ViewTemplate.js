@@ -44,8 +44,21 @@ const ViewTemplate = () => {
     }
   };
 
+  const updateScale = () => {
+    const canvas = document.getElementById("canvas");
+    if (canvas) {
+      const { offsetWidth, offsetHeight } = canvas;
+      const scaleWidth = window.innerWidth / offsetWidth;
+      const scaleHeight = window.innerHeight / offsetHeight;
+      setScale(Math.min(scaleWidth, scaleHeight));
+    }
+  };
+
   useEffect(() => {
     fetchTemplateData();
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
   }, [id]);
 
   const handleWheel = (event) => {
@@ -83,6 +96,11 @@ const ViewTemplate = () => {
           flexDirection: "column",
           height: "100vh",
           backgroundColor: "#FCFCFC",
+          "@media (max-width: 700px)": {
+            marginTop: "60px",
+            height: "auto",
+            flexDirection: "column",
+          },
         }}
       >
         <Headerv2
@@ -98,6 +116,10 @@ const ViewTemplate = () => {
             height: "100%",
             overflow: "hidden",
             flexDirection: "row",
+            "@media (max-width: 700px)": {
+              flexDirection: "column",
+              overflow: "auto",
+            },
           }}
         >
           <Box
@@ -112,12 +134,15 @@ const ViewTemplate = () => {
               position: "relative",
               cursor: isPanning.current ? "grabbing" : "grab",
               backgroundColor: "#FCFCFC",
+              "@media (max-width: 700px)": {
+                overflow: "auto",
+              },
             }}
           >
             <Box
               sx={{
                 transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`,
-                transformOrigin: "center",
+                transformOrigin: "top left",
                 transition: isPanning.current
                   ? "none"
                   : "transform 0.2s ease-out",
@@ -130,7 +155,15 @@ const ViewTemplate = () => {
               }}
             >
               <Box
-                sx={{ width: "800px", height: "600px", position: "relative" }}
+                sx={{
+                  width: "var(--canvas-width, 800px)",
+                  height: "600px",
+                  position: "relative",
+                  "@media (max-width: 700px)": {
+                    width: "100%",
+                    height: "auto",
+                  },
+                }}
               >
                 <Canvas sections={sections} isViewMode={true} />
               </Box>
