@@ -8,6 +8,7 @@ import { createTemplate, createSection } from "../service/templateService";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Headerv2 from "./template-components/Headerv2";
 import LayerList from "./template-components/LayerList";
+import "../css/font.css";
 
 const CreateTemplate = () => {
   const [sections, setSections] = useState([]);

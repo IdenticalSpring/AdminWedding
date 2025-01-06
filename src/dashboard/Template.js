@@ -126,36 +126,34 @@ const TemplateManagement = () => {
     navigate(`/create-letter/${id}`);
   };
 
-  // const handleDeleteInvitation = async (id) => {
-  //   try {
-  //     // Xác nhận trước khi xóa
-  //     const confirmDelete = window.confirm(
-  //       "Bạn có chắc chắn muốn xóa lời mời này không?"
-  //     );
-  //     if (!confirmDelete) return;
-
-  //     // Gọi API xóa
-  //     await deleteInvitation(id);
-
-  //     // Xử lý sau khi xóa thành công
-  //     alert("Lời mời đã được xóa thành công!");
-  //   } catch (error) {
-  //     console.error("Lỗi khi xóa lời mời:", error);
-  //     alert(error.message || "Xóa lời mời thất bại!");
-  //   }
-  // };
-
   const handlePreviewInvitation = (id) => {
     navigate(`/preview-invitation/${id}`);
   };
 
   const columns = [
+    {
+      field: "thumbnailUrl",
+      headerName: "Thumbnail",
+      flex: 1,
+      renderCell: (params) => (
+        <img
+          src={params.value}
+          alt="Thumbnail"
+          style={{
+            width: "100%",
+            height: "auto",
+            maxHeight: "50px",
+            objectFit: "cover",
+          }}
+        />
+      ),
+    },
     { field: "name", headerName: "Name", flex: 1 },
-    { field: "description", headerName: "Description", flex: 2 },
+    { field: "description", headerName: "Description", flex: 1 },
     {
       field: "subscriptionPlan",
       headerName: "Subscription Plan",
-      flex: 2,
+      flex: 1,
       renderCell: (params) => {
         const plan = params.row.subscriptionPlan;
         if (!plan) return "No Plan";
@@ -173,9 +171,9 @@ const TemplateManagement = () => {
       },
     },
     {
-      field: "actions",
-      headerName: "Actions",
-      flex: 3,
+      field: "templateActions",
+      headerName: "Template Actions",
+      flex: 1,
 
       renderCell: (params) => (
         <Box
@@ -195,12 +193,12 @@ const TemplateManagement = () => {
               marginTop: "8px",
             }}
           >
-            <Typography
+            {/* <Typography
               variant="caption"
               sx={{ color: "text.secondary", mr: 1 }}
             >
               Template:
-            </Typography>
+            </Typography> */}
             <Tooltip title="View">
               <IconButton size="small" onClick={() => handleView(params.id)}>
                 <RemoveRedEyeIcon fontSize="small" />
@@ -227,7 +225,7 @@ const TemplateManagement = () => {
           </Box>
 
           {/* Letter Actions */}
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               gap: 0.5,
@@ -257,7 +255,42 @@ const TemplateManagement = () => {
                 <PreviewIcon fontSize="small" color="primary" />
               </IconButton>
             </Tooltip>
-          </Box>
+          </Box> */}
+        </Box>
+      ),
+    },
+    {
+      field: "letterActions",
+      headerName: "Letter Actions",
+      flex: 1,
+      renderCell: (params) => (
+        <Box
+          sx={{
+            display: "flex",
+            gap: 0.5,
+            alignItems: "center",
+            marginTop: "8px",
+          }}
+        >
+          {/* <Typography variant="caption" sx={{ color: "text.secondary", mr: 1 }}>
+            Letter:
+          </Typography> */}
+          <Tooltip title="Create Letter">
+            <IconButton
+              size="small"
+              onClick={() => handleCreateLetter(params.id)}
+            >
+              <AddIcon fontSize="small" color="primary" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Preview Invitation">
+            <IconButton
+              size="small"
+              onClick={() => handlePreviewInvitation(params.id)}
+            >
+              <PreviewIcon fontSize="small" color="primary" />
+            </IconButton>
+          </Tooltip>
         </Box>
       ),
     },
