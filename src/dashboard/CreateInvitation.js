@@ -5,7 +5,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import Canvas from "../dashboard/components/invitation/Canvas";
 import Toolbar from "./components/invitation/ToolBar";
 import Headerv2 from "../dashboard/components/invitation/Headerv2";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LayerList from "../dashboard/components/invitation/LayerList";
 import {
   createInvitation,
@@ -24,6 +24,7 @@ const CreateInvitation = () => {
   const isPanning = useRef(false);
   const startPoint = useRef({ x: 0, y: 0 });
   const [selectedItem, setSelectedItem] = useState("");
+  const navigate = useNavigate();
   const [invitationData, setInvitationData] = useState({
     title: "",
     templateId: id,
@@ -213,6 +214,7 @@ const CreateInvitation = () => {
         console.log("Invitation created successfully:", savedInvitation);
         showSnackbar("Invitation created successfully!", "success");
         setExistingInvitation(true);
+        navigate(`/template`);
       }
     } catch (error) {
       console.error("Error saving invitation:", error);
