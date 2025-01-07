@@ -33,7 +33,6 @@ const CreateTemplate = () => {
   });
 
   const [selectedItem, setSelectedItem] = useState(""); // State để lưu giá trị của dropdown
-
   const handleDropdownChange = (value) => {
     setSelectedItem(value); // Cập nhật giá trị khi dropdown thay đổi
     if (activeItem) {
@@ -42,21 +41,38 @@ const CreateTemplate = () => {
         prevSections.map((section) =>
           section.id === activeItem.sectionId
             ? {
-                ...section,
-                components: section.components.map((component) =>
-                  component.id === activeItem.componentId
-                    ? {
-                        ...component,
-                        id: `${component.id}-${value}`, // Thêm selectedItem vào ID của component
-                      }
-                    : component
-                ),
-              }
+              ...section,
+              components: section.components.map((component) => {
+                // Kiểm tra ID và xử lý
+                let updatedId = component.id;
+
+                // Đảm bảo updatedId là chuỗi
+                if (typeof updatedId !== 'string') {
+                  updatedId = String(updatedId); // Nếu không phải chuỗi, chuyển thành chuỗi
+                }
+
+                // Kiểm tra nếu ID không bắt đầu bằng số, xóa các ký tự trước số
+                if (isNaN(parseInt(updatedId[0]))) {
+                  updatedId = updatedId.replace(/^[^\d]*/, ''); // Xóa tất cả ký tự không phải số phía trước
+                }
+
+                // Thêm selectedItem vào ID của component
+                updatedId = `${updatedId}-${value}`;
+
+                return component.id === activeItem.componentId
+                  ? {
+                    ...component,
+                    id: updatedId,
+                  }
+                  : component;
+              }),
+            }
             : section
         )
       );
     }
   };
+
   const isPanning = useRef(false);
   const startPoint = useRef({ x: 0, y: 0 });
 
