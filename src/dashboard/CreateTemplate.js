@@ -106,7 +106,6 @@ const CreateTemplate = () => {
       showSnackbar("Lưu template và sections thành công!", "success");
       setTimeout(() => navigate("/template"), 1000); // Chuyển hướng sau 1s
     } catch (error) {
-      console.error("Lỗi khi lưu template và sections:", error);
       showSnackbar(error.message || "Lưu thất bại!", "error");
     } finally {
       setIsLoading(false); // Tắt loading
