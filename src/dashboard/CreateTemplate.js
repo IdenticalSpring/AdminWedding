@@ -167,12 +167,12 @@ const CreateTemplate = () => {
       components: [],
       style: {
         width: "100%",
-        minWidth: "800px",
+        minWidth: "500px",
         height: "100%",
         padding: 0,
         position: "relative",
         marginBottom: 2,
-        minHeight: "500px",
+        minHeight: "800px",
         backgroundColor: "#f9f9f9",
         transition: "border 0.3s ease",
       },
@@ -292,7 +292,7 @@ const CreateTemplate = () => {
               }}
             >
               <Box
-                sx={{ width: "800px", height: "600px", position: "relative" }}
+                sx={{ width: "500px", height: "800px", position: "relative" }}
               >
                 <Canvas
                   sections={sections}
