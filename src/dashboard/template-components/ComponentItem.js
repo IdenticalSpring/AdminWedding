@@ -189,6 +189,7 @@ const ComponentItem = ({
           <DialogTitle>Edit Text</DialogTitle>
           <DialogContent>
             <TextField
+              autoFocus
               fullWidth
               multiline
               variant="outlined"
