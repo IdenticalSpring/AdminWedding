@@ -23,7 +23,7 @@ const StyleInput = ({
   options,
   step = 1,
 }) => (
-  <Box sx={{ display: "flex", alignItems: "center", mt: 3 }}>
+  <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
     <Box sx={{ width: "100%" }}>
       {type === "select" ? (
         <TextField
@@ -109,8 +109,9 @@ const StyleEditor = ({
       sx={{
         padding: 0.5,
         backgroundColor: "#f9f9f9",
-        maxHeight: 400,
+        height: "80vh",
         overflowY: "auto",
+        overflowX: "hidden",
       }}
     >
       <Box>
