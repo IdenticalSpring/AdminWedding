@@ -19,6 +19,7 @@ const Toolbar = ({
   selectedItem,
   onDropdownChange,
   subscriptionPlan,
+  activeItem,
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [subscriptions, setSubscriptions] = useState([]);
@@ -107,6 +108,7 @@ const Toolbar = ({
               handleStyleChange={handleStyleChange}
               selectedItem={selectedItem}
               onChange={onDropdownChange}
+              activeItem={activeItem}
             />
           </Box>
         )}

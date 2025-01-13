@@ -148,28 +148,43 @@ const EditTemplate = () => {
 
   const handleDropdownChange = (value) => {
     setSelectedItem(value); // Cập nhật giá trị khi dropdown thay đổi
+
     if (activeItem) {
       // Cập nhật ID của component hiện tại khi chọn một item
       setSections((prevSections) =>
         prevSections.map((section) =>
           section.id === activeItem.sectionId
             ? {
-                ...section,
-                components: section.components.map((component) =>
-                  component.id === activeItem.componentId
-                    ? {
-                        ...component,
-                        id: `${component.id}-${value}`, // Thêm selectedItem vào ID của component
-                      }
-                    : component
-                ),
-              }
-            : section
+              ...section,
+              components: section.components.map((component) => {
+                if (component.id === activeItem.componentId) {
+                  // Xử lý ID
+                  let updatedId = component.id;
+
+                  // Đảm bảo updatedId là chuỗi
+                  if (typeof updatedId !== "string") {
+                    updatedId = String(updatedId); // Chuyển thành chuỗi nếu cần
+                  }
+
+                  // Loại bỏ phần `-value` cũ (nếu có)
+                  updatedId = updatedId.replace(/-\w+$/, ""); // Xóa phần sau dấu `-`
+
+                  // Thêm giá trị mới
+                  updatedId = `${updatedId}-${value}`;
+
+                  return {
+                    ...component,
+                    id: updatedId, // Gán lại ID đã xử lý
+                  };
+                }
+                return component; // Không thay đổi component khác
+              }),
+            }
+            : section // Không thay đổi section khác
         )
       );
     }
   };
-
   const handleWheel = (event) => {
     event.preventDefault();
     setScale((prevScale) => {
@@ -300,6 +315,7 @@ const EditTemplate = () => {
             selectedItem={selectedItem}
             onDropdownChange={handleDropdownChange}
             subscriptionPlan={templateData.subscriptionPlan}
+            activeItem={activeItem} 
           />
         </Box>
         <Box
