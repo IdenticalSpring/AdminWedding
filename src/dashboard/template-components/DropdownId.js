@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, MenuItem, Select, Typography } from "@mui/material";
 
-const DropdownMenu = ({ selectedItem, onChange }) => {
+const DropdownMenu = ({ selectedItem, onChange, componentId }) => {
+  const [extractedValue, setExtractedValue] = useState("");
+
+  // Tách phần sau dấu "-" từ componentId
+  useEffect(() => {
+    if (componentId && typeof componentId === "string") {
+      // Kiểm tra nếu componentId là chuỗi
+      const parts = componentId.split("-");
+      const value = parts.length > 1 ? parts[1] : ""; // Lấy phần sau dấu "-"
+      setExtractedValue(value);
+    } else {
+      setExtractedValue(""); // Nếu không hợp lệ, đặt giá trị rỗng
+    }
+  }, [componentId]);
+
   const menuItems = [
     { label: "Default", value: "default" },
     { label: "Tên cô dâu", value: "ten_co_dau" },
@@ -11,15 +25,11 @@ const DropdownMenu = ({ selectedItem, onChange }) => {
     { label: "Tên khách", value: "ten_khach" },
   ];
 
-  const handleChange = (e) => {
-    const value = e.target.value;
-    onChange(value); // Trigger the parent
-  };
   return (
     <Box sx={{ width: "100%" }}>
       <Select
-        value={selectedItem}
-        onChange={handleChange}
+        value={extractedValue || ""}
+        onChange={(e) => onChange(e.target.value)}
         displayEmpty
         fullWidth
         size="small"

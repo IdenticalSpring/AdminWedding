@@ -86,6 +86,7 @@ const StyleEditor = ({
   handleStyleChange,
   selectedItem,
   onChange,
+  activeItem,
 }) => {
   const loadFont = (url) => {
     if (!document.querySelector(`link[href="${url}"]`)) {
@@ -152,7 +153,7 @@ const StyleEditor = ({
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Select Component ID
         </Typography>
-        <DropdownMenu selectedItem={selectedItem} onChange={onChange} />
+        <DropdownMenu selectedItem={selectedItem} onChange={onChange} componentId={activeItem?.componentId}  />
 
         <Typography variant="subtitle2" sx={{ fontWeight: 500, mt: 2 }}>
           Font Size
