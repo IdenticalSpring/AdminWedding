@@ -43,7 +43,13 @@ const StyleInput = ({
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <TextField
             value={value || ""}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => {
+              const newValue =
+                type === "number"
+                  ? parseFloat(e.target.value) || 0
+                  : e.target.value;
+              onChange(newValue);
+            }}
             size="small"
             fullWidth
             type="number"

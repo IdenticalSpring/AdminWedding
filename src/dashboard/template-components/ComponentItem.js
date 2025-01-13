@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  DialogContentText,
 } from "@mui/material";
 import { uploadImages } from "../../service/templateService.js";
 
@@ -185,17 +186,26 @@ const ComponentItem = ({
           <MenuItem onClick={handleDelete}>Delete</MenuItem>
         </Menu>
 
-        <Dialog open={openTextEdit} onClose={handleTextEditClose}>
+        <Dialog
+          open={openTextEdit}
+          onClose={handleTextEditClose}
+          fullWidth="sm"
+          maxWidth="sm"
+        >
           <DialogTitle>Edit Text</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              fullWidth
-              multiline
-              variant="outlined"
-              value={newText}
-              onChange={(e) => setNewText(e.target.value)}
-            />
+          <DialogContent dividers>
+            <DialogContentText>
+              <TextField
+                autoFocus
+                fullWidth
+                multiline
+                // rows={4}
+                maxRows={4}
+                variant="filled"
+                value={newText}
+                onChange={(e) => setNewText(e.target.value)}
+              />
+            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleTextEditClose}>Cancel</Button>
