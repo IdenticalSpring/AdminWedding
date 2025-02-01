@@ -9,11 +9,18 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useDrag, useDrop } from "react-dnd";
-import DropdownSelectResponsive from "./DropdownSelectResponsive"; // Import DropdownSelectResponsive
+import DropdownSelectResponsive from "./DropdownSelectResponsive";
 
 const ItemType = "COMPONENT";
 
-const DraggableListItem = ({ component, index, moveComponent }) => {
+const DraggableListItem = ({ 
+  component, 
+  index, 
+  moveComponent, 
+  isActive,
+  sectionId,
+  onSelectComponent 
+}) => {
   const [, ref] = useDrag({
     type: ItemType,
     item: { index },
@@ -32,18 +39,32 @@ const DraggableListItem = ({ component, index, moveComponent }) => {
   return (
     <ListItem
       ref={(node) => ref(drop(node))}
+      onClick={() => onSelectComponent(component, sectionId)}
       sx={{
         pl: 4,
-        backgroundColor: "#fff",
+        backgroundColor: isActive ? "#e3f2fd" : "#fff",
         borderRadius: "5px",
         marginBottom: "5px",
-        boxShadow: "0px 1px 3px rgba(0,0,0,0.2)",
+        boxShadow: isActive 
+          ? "0px 2px 4px rgba(33, 150, 243, 0.3)"
+          : "0px 1px 3px rgba(0,0,0,0.2)",
         cursor: "grab",
+        border: isActive ? "2px solid #1976d2" : "1px solid #ddd",
+        transition: "all 0.2s ease",
+        '&:hover': {
+          backgroundColor: isActive ? "#e3f2fd" : "#f5f5f5",
+        }
       }}
     >
       <ListItemText
         primary={`Component: ${component.id}`}
         secondary={`Type: ${component.type}`}
+        sx={{
+          '& .MuiListItemText-primary': {
+            fontWeight: isActive ? 600 : 400,
+            color: isActive ? "#1976d2" : "inherit"
+          }
+        }}
       />
     </ListItem>
   );
@@ -51,6 +72,7 @@ const DraggableListItem = ({ component, index, moveComponent }) => {
 
 const LayerList = ({
   sections,
+  activeItem,
   onSelectLayer,
   onSelectComponent,
   onUpdateSections,
@@ -58,7 +80,6 @@ const LayerList = ({
   const [expandedSections, setExpandedSections] = React.useState({});
   const [selectedSectionId, setSelectedSectionId] = React.useState("");
 
-  // Toggle trạng thái mở/đóng của section
   const toggleSection = (sectionId) => {
     setExpandedSections((prevState) => ({
       ...prevState,
@@ -66,20 +87,25 @@ const LayerList = ({
     }));
   };
 
+  const handleComponentClick = (component, sectionId) => {
+    if (onSelectComponent) {
+      onSelectComponent({
+        componentId: component.id,
+        sectionId: sectionId
+      });
+    }
+  };
+
   const moveComponent = (sectionId, fromIndex, toIndex) => {
     onUpdateSections((prevSections) =>
       prevSections.map((section) => {
         if (section.id !== sectionId) return section;
-
         const updatedComponents = [...section.components];
         const [movedComponent] = updatedComponents.splice(fromIndex, 1);
         updatedComponents.splice(toIndex, 0, movedComponent);
-
-        // Cập nhật z-index dựa trên thứ tự mới
         updatedComponents.forEach((comp, idx) => {
           comp.zIndex = idx + 1;
         });
-
         return { ...section, components: updatedComponents };
       })
     );
@@ -87,7 +113,6 @@ const LayerList = ({
 
   const handleDropdownChange = (sectionId, value) => {
     setSelectedSectionId(sectionId);
-    // Cập nhật giá trị responsive của section
     onUpdateSections((prevSections) =>
       prevSections.map((section) =>
         section.id === sectionId ? { ...section, responsive: value } : section
@@ -114,7 +139,6 @@ const LayerList = ({
       <List>
         {sections.map((section) => (
           <Box key={section.id} sx={{ marginBottom: "10px" }}>
-            {/* Section Header */}
             <ListItem
               button
               onClick={() => toggleSection(section.id)}
@@ -131,29 +155,27 @@ const LayerList = ({
               {expandedSections[section.id] ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
 
-            {/* DropdownSelectResponsive */}
             <DropdownSelectResponsive
               selectedItemSectionId={section.responsive || ""}
-              onChangeSection={(value) =>
-                handleDropdownChange(section.id, value)
-              }
+              onChangeSection={(value) => handleDropdownChange(section.id, value)}
             />
 
-            {/* Component List */}
-            <Collapse
-              in={expandedSections[section.id]}
-              timeout="auto"
-              unmountOnExit
-            >
+            <Collapse in={expandedSections[section.id]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {section.components.map((component, index) => (
                   <DraggableListItem
                     key={component.id}
                     component={component}
                     index={index}
+                    sectionId={section.id}
                     moveComponent={(fromIndex, toIndex) =>
                       moveComponent(section.id, fromIndex, toIndex)
                     }
+                    isActive={
+                      activeItem?.componentId === component.id && 
+                      activeItem?.sectionId === section.id
+                    }
+                    onSelectComponent={handleComponentClick}
                   />
                 ))}
               </List>
