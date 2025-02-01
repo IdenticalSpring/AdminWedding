@@ -273,9 +273,11 @@ const CreateTemplate = () => {
         >
           <LayerList
             sections={sections}
+            activeItem={activeItem}  // Add this line
             onSelectLayer={handleSelectLayer}
             onReorderSections={handleReorderSections}
             onUpdateSections={handleUpdateSections}
+            onSelectComponent={handleComponentClick}  
           />
 
           {/* Main Canvas */}
